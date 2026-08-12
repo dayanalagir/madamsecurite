@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Контент-система · Даяна × Madam Securité</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F7F1E6; --cream2:#EFE7D8; --white:#FFFDF8;
+  --navy:#1C2438; --soft:#5A6076; --burg:#8F162D; --burg2:#6E1B2C;
+  --gold:#B9852E; --line:#DCD2B9;
+  --green:#4C7A52; --amber:#C98A1E; --red:#A63A3A;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--cream);color:var(--navy);font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.6;}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;color:var(--burg);margin:0 0 .35em;font-weight:600;}
+a{color:var(--burg);}
+.app{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+aside{width:224px;flex-shrink:0;background:var(--white);border-right:1px solid var(--line);
+  padding:22px 0 40px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+aside .brand{padding:0 20px 18px;border-bottom:1px solid var(--line);margin-bottom:12px;}
+aside .brand h1{font-size:20px;line-height:1.2;margin:0;}
+aside .brand p{margin:4px 0 0;font-size:11.5px;color:var(--soft);}
+aside nav a{display:flex;align-items:center;gap:9px;padding:9px 20px;font-size:13.5px;color:var(--soft);
+  text-decoration:none;border-left:3px solid transparent;cursor:pointer;}
+aside nav a:hover{background:var(--cream2);}
+aside nav a.on{color:var(--burg);border-left-color:var(--burg);background:var(--cream2);font-weight:500;}
+aside .grp{padding:14px 20px 5px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);}
+
+main{flex:1;padding:34px 40px 90px;max-width:1080px;}
+section{display:none;}
+section.on{display:block;}
+.head{margin-bottom:22px;}
+.head h2{font-size:29px;}
+.head p{margin:0;color:var(--soft);font-size:13.5px;max-width:640px;}
+
+/* CONTROLS */
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+input[type=text],select,textarea{font-family:'Inter';font-size:13.5px;padding:8px 11px;border:1px solid var(--line);
+  border-radius:7px;background:var(--white);color:var(--navy);}
+input[type=text]{min-width:190px;}
+.btn{font-family:'Inter';font-size:13px;padding:8px 14px;border-radius:7px;border:1px solid var(--burg);
+  background:var(--burg);color:#fff;cursor:pointer;}
+.btn.ghost{background:none;color:var(--burg);}
+.btn.sm{padding:4px 9px;font-size:12px;}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--white);}
+.seg button{font-family:'Inter';font-size:13px;padding:8px 14px;border:none;background:none;cursor:pointer;color:var(--soft);}
+.seg button.on{background:var(--burg);color:#fff;}
+.count{font-size:12.5px;color:var(--soft);margin-bottom:12px;}
+
+/* TOPIC ROWS */
+.row{padding:11px 0;border-bottom:1px solid var(--line);}
+.rt{display:flex;justify-content:space-between;gap:12px;align-items:baseline;}
+.ttl{font-size:14px;font-weight:500;cursor:pointer;}
+.meta{display:flex;gap:7px;align-items:center;flex-shrink:0;font-size:11px;}
+.badge{font-size:10.5px;padding:2px 8px;border-radius:10px;background:var(--cream2);color:var(--soft);white-space:nowrap;}
+.acc{font-weight:600;}
+.acc.p{color:var(--gold);} .acc.m{color:var(--burg);} .acc.b{color:var(--soft);}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+.dot.l{background:var(--green);} .dot.m{background:var(--amber);} .dot.h{background:var(--red);}
+.st{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:2px 9px;font-size:10.5px;background:var(--white);}
+.st.s0{color:var(--soft);} .st.s1{color:var(--amber);border-color:var(--amber);}
+.st.s2{color:var(--green);border-color:var(--green);} .st.s3{color:#fff;background:var(--burg);border-color:var(--burg);}
+.exp{margin-top:9px;display:none;}
+.row.open .exp{display:block;}
+.chips{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{font-size:12px;padding:4px 10px;border-radius:13px;border:1px solid var(--line);background:var(--white);cursor:pointer;color:var(--soft);}
+.chip.on{background:var(--burg);color:#fff;border-color:var(--burg);}
+.fmts{font-size:12px;color:var(--soft);margin-top:7px;}
+.fmts b{color:var(--burg2);}
+
+/* CARDS */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.card{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:15px 17px;}
+.card h4{font-size:16.5px;margin-bottom:5px;}
+.card p{margin:0;font-size:13px;color:var(--navy);}
+.tagline{margin-top:9px;font-size:11.5px;color:var(--gold);}
+
+/* TOGGLES */
+details.tg{background:var(--white);border:1px solid var(--line);border-radius:9px;margin-bottom:9px;padding:0 15px;}
+details.tg summary{cursor:pointer;padding:12px 0;font-weight:500;font-size:14px;list-style:none;display:flex;justify-content:space-between;gap:10px;}
+details.tg summary::-webkit-details-marker{display:none;}
+details.tg summary:before{content:"▸";color:var(--burg);margin-right:8px;display:inline-block;transition:.15s;}
+details.tg[open] summary:before{transform:rotate(90deg);}
+details.tg p{margin:0 0 13px;font-size:13.5px;color:var(--navy);}
+.cnt{font-size:11px;color:var(--soft);font-weight:400;}
+ul.hooks{margin:0 0 13px;padding:0;list-style:none;}
+ul.hooks li{padding:6px 0 6px 20px;border-top:1px solid var(--cream2);font-size:13.5px;cursor:pointer;position:relative;}
+ul.hooks li:before{content:"❞";position:absolute;left:0;color:var(--gold);font-size:12px;}
+ul.hooks li:hover{color:var(--burg);}
+ul.hooks li.copied:after{content:" скопировано";font-size:11px;color:var(--green);}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--white);border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+th{text-align:left;font-weight:500;font-size:11.5px;color:var(--soft);padding:9px 11px;border-bottom:1px solid var(--line);background:var(--cream2);}
+td{padding:9px 11px;border-bottom:1px solid var(--cream2);vertical-align:top;}
+td.mo{font-weight:500;color:var(--burg);white-space:nowrap;}
+td.inp{background:var(--white);min-width:110px;}
+td.inp:focus{outline:2px solid var(--gold);outline-offset:-2px;}
+
+/* CALENDAR */
+.week{margin-bottom:26px;}
+.wt{font-size:11.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:flex;justify-content:space-between;}
+table.cal{table-layout:fixed;}
+table.cal td{padding:4px;border:none;}
+.rub{font-size:11px;color:var(--gold);white-space:nowrap;padding-right:8px;}
+.cell{background:var(--white);border:1px solid var(--line);border-radius:7px;min-height:52px;padding:6px 7px;font-size:11.5px;position:relative;}
+.cell .ct{font-weight:500;margin-bottom:3px;line-height:1.35;}
+.plus{width:100%;height:38px;border:1px dashed var(--line);border-radius:7px;background:none;color:var(--soft);cursor:pointer;font-size:17px;}
+.x{position:absolute;top:2px;right:5px;border:none;background:none;cursor:pointer;color:var(--soft);font-size:12px;}
+.cell select{width:100%;font-size:11.5px;padding:4px;}
+.cell select.mini{margin-top:4px;font-size:10.5px;padding:3px 4px;border:1px solid var(--line);border-radius:5px;background:var(--cream);color:var(--soft);}
+.badge.cl{background:var(--cream);color:var(--gold);border:1px solid var(--line);}
+.rub{font-size:11px;color:var(--gold);white-space:normal;line-height:1.3;}
+
+/* TRAFFIC LIGHT */
+.lights{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;}
+.light{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px 20px;min-width:190px;}
+.light .lamp{width:44px;height:44px;border-radius:50%;margin-bottom:10px;}
+.light h4{font-size:17px;margin:0 0 3px;}
+.light span{font-size:12.5px;color:var(--soft);}
+.note{background:var(--cream2);border-left:3px solid var(--gold);padding:11px 15px;font-size:13px;color:var(--soft);border-radius:0 7px 7px 0;margin:14px 0;}
+.bars{margin-top:6px;}
+.barrow{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:12.5px;}
+.barrow .lbl{width:88px;color:var(--soft);}
+.track{flex:1;height:9px;background:var(--cream2);border-radius:5px;overflow:hidden;}
+.fill{height:100%;}
+.inbox-row{display:flex;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+.inbox-row .t{flex:1;}
+.muted{color:var(--soft);font-size:13px;font-style:italic;}
+@media(max-width:820px){
+  .app{flex-direction:column;}
+  aside{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--line);padding-bottom:8px;}
+  aside nav{display:flex;overflow-x:auto;gap:2px;}
+  aside nav a{border-left:none;border-bottom:2px solid transparent;white-space:nowrap;padding:9px 13px;}
+  aside nav a.on{border-left:none;border-bottom-color:var(--burg);}
+  aside .grp{display:none;}
+  main{padding:24px 18px 70px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><h1>Контент-система</h1><p>Даяна × Madam Securité</p></div>
+  <nav>
+    <div class="grp">поток</div>
+    <a data-s="inbox" class="on">📥 Инбокс идей</a>
+    <a data-s="bank">🗂 Банк тем</a>
+    <a data-s="light">🚦 Светофор загрузки</a>
+    <a data-s="cal">📅 Календарь недели</a>
+    <a data-s="plan">🧭 Контент-план года</a>
+    <div class="grp">инструменты</div>
+    <a data-s="hooks">🪝 Хуки</a>
+    <a data-s="formats">🎬 Форматы</a>
+    <a data-s="dice">🎲 Кости</a>
+    <div class="grp">линии</div>
+    <a data-s="projects">🌟 Спецпроекты</a>
+    <a data-s="pod">🎙 Подкаст</a>
+    <a data-s="collab">🤝 Коллабы и вебинары</a>
+    <div class="grp">рост</div>
+    <a data-s="mk">📈 Маркетинг</a>
+    <a data-s="metrics">📊 Метрики</a>
+    <a data-s="data">💾 Данные</a>
+  </nav>
+</aside>
+<main>
+
+<!-- INBOX -->
+<section id="s-inbox" class="on">
+  <div class="head"><h2>📥 Инбокс идей</h2>
+  <p>Сюда падает всё сырое: мысль в метро, тема из комментария, идея после статьи. Не сортируем в момент записи — сортируем раз в неделю, когда переносим в банк.</p></div>
+  <div class="bar">
+    <input type="text" id="inbT" placeholder="идея одной строкой…" style="flex:1;min-width:240px;">
+    <select id="inbA"><option value="p">личный</option><option value="m">Мадам</option><option value="b">оба</option></select>
+    <select id="inbC"></select>
+    <button class="btn" id="inbAdd">добавить</button>
+  </div>
+  <div class="count" id="inbCount"></div>
+  <div id="inbList"></div>
+  <div class="note">Разбор инбокса — раз в неделю, 15 минут. Каждая идея получает один из трёх исходов: в банк с категорией и аккаунтом · в архив без сожалений · сразу в календарь, если она горячая и привязана к событию.</div>
+</section>
+
+<!-- BANK -->
+<section id="s-bank">
+  <div class="head"><h2>🗂 Банк тем</h2>
+  <p>Всё, что когда-либо придумывалось для обоих аккаунтов, включая архивы личного блога и старой команды. Клик по названию раскрывает выбор платформ — тема с выбранной платформой попадает в очередь календаря.</p></div>
+  <div class="bar">
+    <div class="seg" id="accSeg">
+      <button data-a="" class="on">все</button>
+      <button data-a="p">👤 личный</button>
+      <button data-a="m">👑 Мадам</button>
+      <button data-a="b">🔀 оба</button>
+    </div>
+    <input type="text" id="q" placeholder="искать тему…">
+    <select id="clF"></select>
+    <select id="catF"></select>
+    <select id="stF">
+      <option value="">любой статус</option><option value="0">идея</option><option value="1">в работе</option>
+      <option value="2">готово</option><option value="3">опубликовано</option>
+    </select>
+    <select id="enF"><option value="">любая энергия</option><option value="l">лёгкая</option><option value="m">средняя</option><option value="h">тяжёлая</option></select>
+  </div>
+  <div class="count" id="cnt"></div>
+  <div id="list"></div>
+</section>
+
+<!-- TRAFFIC LIGHT -->
+<section id="s-light">
+  <div class="head"><h2>🚦 Светофор загрузки</h2>
+  <p>Считает не количество постов, а вес. Тяжёлая единица — это лонгрид, видеоэссе, съёмка с гостем. Лёгкая — сторис, репост, мем. Светофор смотрит на сумму весов в каждой неделе календаря.</p></div>
+  <div class="bar">
+    <span style="font-size:13px;color:var(--soft);">мой запас сил на ближайшие недели:</span>
+    <div class="seg" id="capSeg">
+      <button data-c="6">мало</button><button data-c="10" class="on">обычно</button><button data-c="15">много</button>
+    </div>
+  </div>
+  <div class="lights" id="lights"></div>
+  <div class="note">Вес: лёгкая единица — 1, средняя — 2, тяжёлая — 4. Красный не значит «плохо» — значит, что неделя требует батча и заранее написанных сценариев. Две красные недели подряд — повод переставить одну тяжёлую единицу.</div>
+  <h3 style="margin-top:26px;">Правила разгрузки</h3>
+  <div class="grid">
+    <div class="card"><h4>Батч вместо ежедневности</h4><p>Один съёмочный день — три-четыре рилса. Сценарии написаны заранее, свет выставлен один раз, образ один.</p></div>
+    <div class="card"><h4>Буферная неделя</h4><p>Каждые шесть недель — неделя без обязательного видео. Только сторис, репосты и текст. Это не пропуск, это часть плана.</p></div>
+    <div class="card"><h4>Одна тяжёлая в неделю</h4><p>Больше одной тяжёлой единицы в неделю при PhD-нагрузке не выдерживается. Проверено.</p></div>
+    <div class="card"><h4>Контент-якорь</h4><p>Тяжёлая единица должна порождать минимум пять лёгких. Если не порождает — она сделана зря.</p></div>
+    <div class="card"><h4>Запас на полке</h4><p>Три готовых ролика в запасе снимают панику в плохую неделю. Первым делом при хорошей энергии — снимать в запас, а не выкладывать всё сразу.</p></div>
+    <div class="card"><h4>Разные типы усталости</h4><p>Съёмка, монтаж и написание тратят разный ресурс. В тяжёлую academic-неделю можно писать, но нельзя сниматься — и наоборот.</p></div>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section id="s-cal">
+  <div class="head"><h2>📅 Календарь недели</h2>
+  <p>Пять дней × шесть кластеров. Строка календаря = кластер, поэтому в каждой клетке предлагаются подходящие темы, а не весь банк сразу. У поставленной темы выбирается формат и площадка — не всё же снимать видео.</p></div>
+  <div style="margin-bottom:16px;">
+    <div class="count">Что свободно по кластерам</div>
+    <div id="queue"></div>
+  </div>
+  <div id="weeks"></div>
+  <button class="btn ghost" id="addW">+ добавить неделю</button>
+</section>
+
+<!-- PLAN -->
+<section id="s-plan">
+  <div class="head"><h2>🧭 Контент-план года</h2>
+  <p>Верхний уровень: у каждого месяца одна большая тема, один этап воронки и один продукт в фокусе. Ячейки редактируются прямо здесь и сохраняются.</p></div>
+  <table>
+    <tr><th style="width:96px">Месяц</th><th>Тема месяца</th><th>Событийный якорь</th><th>Этап воронки / продукт</th><th>Лид-магнит</th></tr>
+    <tr><td class='mo'>Январь</td><td class='inp' contenteditable data-pk='p0a'></td><td class='inp' contenteditable data-pk='p0b'></td><td class='inp' contenteditable data-pk='p0c'></td><td class='inp' contenteditable data-pk='p0d'></td></tr><tr><td class='mo'>Февраль</td><td class='inp' contenteditable data-pk='p1a'></td><td class='inp' contenteditable data-pk='p1b'></td><td class='inp' contenteditable data-pk='p1c'></td><td class='inp' contenteditable data-pk='p1d'></td></tr><tr><td class='mo'>Март</td><td class='inp' contenteditable data-pk='p2a'></td><td class='inp' contenteditable data-pk='p2b'></td><td class='inp' contenteditable data-pk='p2c'></td><td class='inp' contenteditable data-pk='p2d'></td></tr><tr><td class='mo'>Апрель</td><td class='inp' contenteditable data-pk='p3a'></td><td class='inp' contenteditable data-pk='p3b'></td><td class='inp' contenteditable data-pk='p3c'></td><td class='inp' contenteditable data-pk='p3d'></td></tr><tr><td class='mo'>Май</td><td class='inp' contenteditable data-pk='p4a'></td><td class='inp' contenteditable data-pk='p4b'></td><td class='inp' contenteditable data-pk='p4c'></td><td class='inp' contenteditable data-pk='p4d'></td></tr><tr><td class='mo'>Июнь</td><td class='inp' contenteditable data-pk='p5a'></td><td class='inp' contenteditable data-pk='p5b'></td><td class='inp' contenteditable data-pk='p5c'></td><td class='inp' contenteditable data-pk='p5d'></td></tr><tr><td class='mo'>Июль</td><td class='inp' contenteditable data-pk='p6a'></td><td class='inp' contenteditable data-pk='p6b'></td><td class='inp' contenteditable data-pk='p6c'></td><td class='inp' contenteditable data-pk='p6d'></td></tr><tr><td class='mo'>Август</td><td class='inp' contenteditable data-pk='p7a'></td><td class='inp' contenteditable data-pk='p7b'></td><td class='inp' contenteditable data-pk='p7c'></td><td class='inp' contenteditable data-pk='p7d'></td></tr><tr><td class='mo'>Сентябрь</td><td class='inp' contenteditable data-pk='p8a'></td><td class='inp' contenteditable data-pk='p8b'></td><td class='inp' contenteditable data-pk='p8c'></td><td class='inp' contenteditable data-pk='p8d'></td></tr><tr><td class='mo'>Октябрь</td><td class='inp' contenteditable data-pk='p9a'></td><td class='inp' contenteditable data-pk='p9b'></td><td class='inp' contenteditable data-pk='p9c'></td><td class='inp' contenteditable data-pk='p9d'></td></tr><tr><td class='mo'>Ноябрь</td><td class='inp' contenteditable data-pk='p10a'></td><td class='inp' contenteditable data-pk='p10b'></td><td class='inp' contenteditable data-pk='p10c'></td><td class='inp' contenteditable data-pk='p10d'></td></tr><tr><td class='mo'>Декабрь</td><td class='inp' contenteditable data-pk='p11a'></td><td class='inp' contenteditable data-pk='p11b'></td><td class='inp' contenteditable data-pk='p11c'></td><td class='inp' contenteditable data-pk='p11d'></td></tr>
+  </table>
+  <h3 style="margin-top:26px;">Каркас, от которого отталкиваться</h3>
+  <div class="grid">
+    <div class="card"><h4>Месяц = одна большая тема</h4><p>Всё, что выходит в месяце, крутится вокруг одной линии. Аудитория запоминает не посты, а темы.</p></div>
+    <div class="card"><h4>Неделя = одна тяжёлая единица</h4><p>Видеоэссе, лонгрид или вебинар. Остальное — производные от неё.</p></div>
+    <div class="card"><h4>Квартал = один запуск</h4><p>Чаще нельзя: аудитория устаёт, а прогрев теряет силу. Между запусками — только польза.</p></div>
+    <div class="card"><h4>Событийные якоря</h4><p>Давос в январе, Мюнхен в феврале, ГА ООН в сентябре, 31 октября — резолюция 1325, COP в ноябре. Планировать под них заранее, а не догонять новость.</p></div>
+  </div>
+</section>
+
+<!-- HOOKS -->
+<section id="s-hooks">
+  <div class="head"><h2>🪝 Хуки</h2>
+  <p>Первые три секунды решают, останется зритель или нет. Здесь — банк первых фраз под ваши темы, разложенный по типам. Клик по фразе копирует её.</p></div>
+  <div class="note">Как пользоваться: берёте тему из банка → выбираете два-три хука из разных категорий → снимаете один и тот же ролик с разными первыми фразами → оставляете тот, у которого выше досматриваемость. Хук — единственная часть ролика, которую стоит тестировать всерьёз.</div>
+  <details class="tg"><summary>🔪 Провокация и слом ожидания <span class="cnt">12</span></summary><ul class="hooks"><li class="hook" data-h="Всё, что вам рассказывали про дипломатию, придумали сценаристы">Всё, что вам рассказывали про дипломатию, придумали сценаристы</li><li class="hook" data-h="Дипломат — это не тот, кто ходит на приёмы. Это тот, кто пишет ноты в три часа ночи">Дипломат — это не тот, кто ходит на приёмы. Это тот, кто пишет ноты в три часа ночи</li><li class="hook" data-h="Ваш английский Advanced? Одно предложение из Foreign Affairs — и проверим">Ваш английский Advanced? Одно предложение из Foreign Affairs — и проверим</li><li class="hook" data-h="Международные отношения — не скучно. Вам просто плохо объясняли">Международные отношения — не скучно. Вам просто плохо объясняли</li><li class="hook" data-h="Эту тему в университете обходят стороной. Зря">Эту тему в университете обходят стороной. Зря</li><li class="hook" data-h="Половина новостей, которые вы читаете, написана людьми, не открывавшими первоисточник">Половина новостей, которые вы читаете, написана людьми, не открывавшими первоисточник</li><li class="hook" data-h="Хватит объяснять мировую политику через характеры лидеров">Хватит объяснять мировую политику через характеры лидеров</li><li class="hook" data-h="Самый переоценённый совет для будущего международника">Самый переоценённый совет для будущего международника</li><li class="hook" data-h="Если вы всё ещё думаете, что ООН должна всех спасать — это видео для вас">Если вы всё ещё думаете, что ООН должна всех спасать — это видео для вас</li><li class="hook" data-h="Забудьте фразу «геополитическая субъектность». Серьёзно, забудьте">Забудьте фразу «геополитическая субъектность». Серьёзно, забудьте</li><li class="hook" data-h="Это не мнение. Это механизм. И он работает независимо от того, кто вам симпатичен">Это не мнение. Это механизм. И он работает независимо от того, кто вам симпатичен</li><li class="hook" data-h="То, что раньше работало в этой профессии, теперь вас тормозит">То, что раньше работало в этой профессии, теперь вас тормозит</li></ul></details>
+<details class="tg"><summary>🧩 Механизм и объяснение <span class="cnt">10</span></summary><ul class="hooks"><li class="hook" data-h="Есть понятие, которое объясняет половину того, что вы видите в новостях">Есть понятие, которое объясняет половину того, что вы видите в новостях</li><li class="hook" data-h="Сейчас покажу, как это устроено изнутри — за шестьдесят секунд">Сейчас покажу, как это устроено изнутри — за шестьдесят секунд</li><li class="hook" data-h="Одно слово, после которого новость читается совершенно иначе">Одно слово, после которого новость читается совершенно иначе</li><li class="hook" data-h="Разберём на пальцах то, за что в университете дают целый семестр">Разберём на пальцах то, за что в университете дают целый семестр</li><li class="hook" data-h="У этого явления есть имя, и оно вам пригодится">У этого явления есть имя, и оно вам пригодится</li><li class="hook" data-h="Это выглядит хаосом ровно до тех пор, пока не знаешь правило">Это выглядит хаосом ровно до тех пор, пока не знаешь правило</li><li class="hook" data-h="Смотрите не на то, что сказали. Смотрите на то, что этим разрешили сделать">Смотрите не на то, что сказали. Смотрите на то, что этим разрешили сделать</li><li class="hook" data-h="Три слоя одного события: что случилось, что это значит, что будет дальше">Три слоя одного события: что случилось, что это значит, что будет дальше</li><li class="hook" data-h="Каждый раз, когда вы это видите, работает один и тот же механизм">Каждый раз, когда вы это видите, работает один и тот же механизм</li><li class="hook" data-h="Объясняю термин, который вы слышали сто раз и ни разу не поняли">Объясняю термин, который вы слышали сто раз и ни разу не поняли</li></ul></details>
+<details class="tg"><summary>📊 Цифра и список <span class="cnt">9</span></summary><ul class="hooks"><li class="hook" data-h="Пять фраз, по которым в переговорной опознают новичка">Пять фраз, по которым в переговорной опознают новичка</li><li class="hook" data-h="Три вещи, которые я перестала делать в учёбе — и стало легче">Три вещи, которые я перестала делать в учёбе — и стало легче</li><li class="hook" data-h="Тридцать восемь минут. Столько длилась самая короткая война в истории">Тридцать восемь минут. Столько длилась самая короткая война в истории</li><li class="hook" data-h="Шесть процентов. Столько женщин подписывали мирные соглашения">Шесть процентов. Столько женщин подписывали мирные соглашения</li><li class="hook" data-h="Четыре типа разведки, о которых вы не знали, что они разные">Четыре типа разведки, о которых вы не знали, что они разные</li><li class="hook" data-h="Двенадцать книг, после которых вы будете читать новости иначе">Двенадцать книг, после которых вы будете читать новости иначе</li><li class="hook" data-h="Одна цифра, которая объясняет, почему этот договор не работает">Одна цифра, которая объясняет, почему этот договор не работает</li><li class="hook" data-h="Семь лет учёбы уместились в три вывода">Семь лет учёбы уместились в три вывода</li><li class="hook" data-h="Два слова разницы в тексте договора — и совершенно разные последствия">Два слова разницы в тексте договора — и совершенно разные последствия</li></ul></details>
+<details class="tg"><summary>👤 Личное и уязвимое <span class="cnt">9</span></summary><ul class="hooks"><li class="hook" data-h="Я читала свою первую статью в аспирантуре со словарём и слезами">Я читала свою первую статью в аспирантуре со словарём и слезами</li><li class="hook" data-h="Мне отказали, и я думала, что это конец. Рассказываю, что было дальше">Мне отказали, и я думала, что это конец. Рассказываю, что было дальше</li><li class="hook" data-h="Как выглядит день человека, который пишет диссертацию про космос">Как выглядит день человека, который пишет диссертацию про космос</li><li class="hook" data-h="Пять лет назад я бы не поверила, что окажусь здесь">Пять лет назад я бы не поверила, что окажусь здесь</li><li class="hook" data-h="Что бы я сказала себе на первом курсе, если бы могла">Что бы я сказала себе на первом курсе, если бы могла</li><li class="hook" data-h="Меня спрашивают, как я не выгораю. Честный ответ">Меня спрашивают, как я не выгораю. Честный ответ</li><li class="hook" data-h="Самая унизительная ошибка, которую я совершила на конференции">Самая унизительная ошибка, которую я совершила на конференции</li><li class="hook" data-h="Я долго боялась говорить, что занимаюсь этим всерьёз">Я долго боялась говорить, что занимаюсь этим всерьёз</li><li class="hook" data-h="Это единственная причина, по которой я веду блог">Это единственная причина, по которой я веду блог</li></ul></details>
+<details class="tg"><summary>❓ Вопрос в лоб <span class="cnt">8</span></summary><ul class="hooks"><li class="hook" data-h="Вы знаете, чем альянс отличается от союза? Большинство — нет">Вы знаете, чем альянс отличается от союза? Большинство — нет</li><li class="hook" data-h="Что произойдёт, если посол объявлен персоной нон грата?">Что произойдёт, если посол объявлен персоной нон грата?</li><li class="hook" data-h="Как вы думаете, кто на самом деле пишет речи, которые вы слышите?">Как вы думаете, кто на самом деле пишет речи, которые вы слышите?</li><li class="hook" data-h="Почему договор, который все хвалят, до сих пор не вступил в силу?">Почему договор, который все хвалят, до сих пор не вступил в силу?</li><li class="hook" data-h="Сколько женщин было за столом, когда подписывали этот документ?">Сколько женщин было за столом, когда подписывали этот документ?</li><li class="hook" data-h="Что вы сейчас изучаете? Мне правда интересно">Что вы сейчас изучаете? Мне правда интересно</li><li class="hook" data-h="Если бы вы оказались в этой переговорной — что бы сделали первым?">Если бы вы оказались в этой переговорной — что бы сделали первым?</li><li class="hook" data-h="Угадаете, какая страна первой это сделала? Ответ в конце">Угадаете, какая страна первой это сделала? Ответ в конце</li></ul></details>
+<details class="tg"><summary>⚔️ Контраст и сравнение <span class="cnt">7</span></summary><ul class="hooks"><li class="hook" data-h="Одно событие. Две теории. Совершенно разные выводы">Одно событие. Две теории. Совершенно разные выводы</li><li class="hook" data-h="Как это выглядит в учебнике и как это выглядит в жизни">Как это выглядит в учебнике и как это выглядит в жизни</li><li class="hook" data-h="Джеймс Бонд и настоящий дипломат: почему это противоположности">Джеймс Бонд и настоящий дипломат: почему это противоположности</li><li class="hook" data-h="Российский профессор и американский профессор пишут письмо — сравним">Российский профессор и американский профессор пишут письмо — сравним</li><li class="hook" data-h="То же самое слово, два перевода — и меняется смысл договора">То же самое слово, два перевода — и меняется смысл договора</li><li class="hook" data-h="Что говорят публично и что написано в приложении к соглашению">Что говорят публично и что написано в приложении к соглашению</li><li class="hook" data-h="Раньше это делали так. Сейчас — вот так. И вот почему">Раньше это делали так. Сейчас — вот так. И вот почему</li></ul></details>
+<details class="tg"><summary>🎯 Обещание результата <span class="cnt">6</span></summary><ul class="hooks"><li class="hook" data-h="После этого видео вы будете читать новости как аналитик">После этого видео вы будете читать новости как аналитик</li><li class="hook" data-h="Покажу метод, который работает на любом событии — проверим прямо здесь">Покажу метод, который работает на любом событии — проверим прямо здесь</li><li class="hook" data-h="Через две минуты вы сможете разложить любой конфликт на шесть слоёв">Через две минуты вы сможете разложить любой конфликт на шесть слоёв</li><li class="hook" data-h="Сохраните: пригодится на экзамене и на собеседовании">Сохраните: пригодится на экзамене и на собеседовании</li><li class="hook" data-h="Один шаблон, который заменит вам час чтения новостей">Один шаблон, который заменит вам час чтения новостей</li><li class="hook" data-h="Это то, что реально спрашивают на отборе — и почти никто не готовится">Это то, что реально спрашивают на отборе — и почти никто не готовится</li></ul></details>
+<details class="tg"><summary>🕵️ Инсайд и закулисье <span class="cnt">6</span></summary><ul class="hooks"><li class="hook" data-h="Так это устроено изнутри, и об этом не пишут в методичках">Так это устроено изнутри, и об этом не пишут в методичках</li><li class="hook" data-h="Показываю, как аналитик собирает справку по стране за час">Показываю, как аналитик собирает справку по стране за час</li><li class="hook" data-h="Вот как выглядит настоящая подготовка к переговорам">Вот как выглядит настоящая подготовка к переговорам</li><li class="hook" data-h="Что происходит за пять минут до того, как включаются камеры">Что происходит за пять минут до того, как включаются камеры</li><li class="hook" data-h="Как на самом деле принимают решение о том, кого пригласить">Как на самом деле принимают решение о том, кого пригласить</li><li class="hook" data-h="Расскажу, как выглядит отбор, о котором все спрашивают в директе">Расскажу, как выглядит отбор, о котором все спрашивают в директе</li></ul></details>
+<details class="tg"><summary>🎲 Серийные и рубричные <span class="cnt">7</span></summary><ul class="hooks"><li class="hook" data-h="Пять костей. Что бы ни выпало — метод один">Пять костей. Что бы ни выпало — метод один</li><li class="hook" data-h="Бросьте за меня: три цифры в комментариях, следующий разбор соберу из них">Бросьте за меня: три цифры в комментариях, следующий разбор соберу из них</li><li class="hook" data-h="Книга недели от Мадам — и почему именно эта">Книга недели от Мадам — и почему именно эта</li><li class="hook" data-h="Цитата недели. Разбираем, что за ней стоит">Цитата недели. Разбираем, что за ней стоит</li><li class="hook" data-h="Три события недели, которые действительно важны">Три события недели, которые действительно важны</li><li class="hook" data-h="Продолжаем серию. В прошлый раз мы остановились на самом интересном">Продолжаем серию. В прошлый раз мы остановились на самом интересном</li><li class="hook" data-h="Часть вторая. Первую посмотрите потом, здесь всё понятно и без неё">Часть вторая. Первую посмотрите потом, здесь всё понятно и без неё</li></ul></details>
+<details class="tg"><summary>🚪 Заходы под конкретную аудиторию <span class="cnt">6</span></summary><ul class="hooks"><li class="hook" data-h="Если вы поступаете в магистратуру за рубежом — это для вас">Если вы поступаете в магистратуру за рубежом — это для вас</li><li class="hook" data-h="Тем, кто пишет диплом по международным отношениям: сохраните">Тем, кто пишет диплом по международным отношениям: сохраните</li><li class="hook" data-h="Если шляпа распределила вас в Слизерин, ваша карьера уже выбрана">Если шляпа распределила вас в Слизерин, ваша карьера уже выбрана</li><li class="hook" data-h="Это видео для тех, кто застрял между «интересно» и «страшно начинать»">Это видео для тех, кто застрял между «интересно» и «страшно начинать»</li><li class="hook" data-h="Для взрослых, которые хотят понимать новости и не чувствовать себя глупо">Для взрослых, которые хотят понимать новости и не чувствовать себя глупо</li><li class="hook" data-h="Если вы работаете со сложными текстами на английском — вам сюда">Если вы работаете со сложными текстами на английском — вам сюда</li></ul></details>
+
+  <h3 style="margin-top:26px;">Чего в хуке быть не должно</h3>
+  <div class="grid">
+    <div class="card"><h4>Приветствия</h4><p>«Всем привет, сегодня мы поговорим о…» — это две потерянные секунды и минус досмотры.</p></div>
+    <div class="card"><h4>Дисклеймеров</h4><p>«Это только моё мнение, не претендую» — снимает вес до того, как он появился.</p></div>
+    <div class="card"><h4>Обещаний без содержания</h4><p>«Досмотрите до конца, там самое интересное» работает один раз и портит доверие.</p></div>
+    <div class="card"><h4>Слов-пустышек</h4><p>Нарратив, дискурс, парадигма в первой фразе — гарантированный свайп.</p></div>
+  </div>
+</section>
+
+<!-- FORMATS -->
+<section id="s-formats">
+  <div class="head"><h2>🎬 Форматы</h2>
+  <p>Каждой теме нужен свой сосуд. Здесь — все форматы системы с указанием, на какую метрику работает каждый.</p></div>
+  <div class="grid"><div class="card"><h4>Reels — мини-лекция (Мадам)</h4><p>60–180 сек. Телесуфлёр, медленный темп, паузы перед ключевой фразой, строгий кадр. Один термин или один механизм на ролик. Обязательно имя учёного или документ.</p><div class="tagline">работает на: удержание, сохранения</div></div>
+<div class="card"><h4>Reels — разговорная объяснялка (личный)</h4><p>30–45 сек. Та же экспертиза в разговорном регистре, без суфлёра, живая реакция.</p><div class="tagline">работает на: охват, комментарии</div></div>
+<div class="card"><h4>Reels — личная история</h4><p>45–90 сек. Хук из уязвимости, поворот, вывод. Работает на доверие и продажи.</p><div class="tagline">работает на: подписки</div></div>
+<div class="card"><h4>Карусель-разбор</h4><p>7–10 слайдов. Первый — обещание, последний — вопрос. Слайды 2–8 несут по одной мысли. Главный формат сохранений.</p><div class="tagline">работает на: сохранения, репосты</div></div>
+<div class="card"><h4>Карусель-тест</h4><p>Механика самоидентификации: типы, архетипы, ниши. Читатель узнаёт себя и отправляет другу.</p><div class="tagline">работает на: репосты</div></div>
+<div class="card"><h4>Инфографика-одностраничник</h4><p>Одно объяснение = одна картинка. Максимально репостируемый формат.</p><div class="tagline">работает на: репосты</div></div>
+<div class="card"><h4>Длинный текст в Telegram</h4><p>Один в неделю. Там, где в Instagram нужен монтаж, здесь работает мысль.</p><div class="tagline">работает на: глубина, лояльность</div></div>
+<div class="card"><h4>Сторис-сериал</h4><p>3–7 кадров на одну историю с обрывом на середине. Возвращает к профилю на следующий день.</p><div class="tagline">работает на: удержание аудитории</div></div>
+<div class="card"><h4>Сторис-опрос и стикер вопроса</h4><p>Собирает темы и одновременно поднимает вес профиля в ленте подписчиков.</p><div class="tagline">работает на: вовлечение</div></div>
+<div class="card"><h4>Прямой эфир / Salon Talk</h4><p>40 минут с гостем. Тема заявлена заранее, вопросы собраны в сторис.</p><div class="tagline">работает на: доверие, продажи</div></div>
+<div class="card"><h4>Видеоэссе на YouTube</h4><p>15–20 мин. Логлайн, 3–4 смысловых блока, финал. Удержание важнее просмотров.</p><div class="tagline">работает на: поиск, глубина</div></div>
+<div class="card"><h4>Shorts / Threads</h4><p>Нарезка длинного. Не отдельная съёмка — переупаковка.</p><div class="tagline">работает на: новая аудитория</div></div>
+<div class="card"><h4>Кости брошены</h4><p>Рубрика-генератор: пять параметров выпадают случайно, разбор собирается на месте.</p><div class="tagline">работает на: серийность, комментарии</div></div>
+<div class="card"><h4>Разбор одной статьи</h4><p>Скринкаст: читаю Foreign Affairs и показываю, что вижу в тексте. Прямая витрина «Брифинга».</p><div class="tagline">работает на: продажи</div></div>
+<div class="card"><h4>Мини-серия из трёх частей</h4><p>Одна тема, три ролика, ссылки друг на друга. Даёт прирост в 2–3 раза против одиночного.</p><div class="tagline">работает на: удержание, подписки</div></div>
+</div>
+</section>
+
+<!-- DICE -->
+<section id="s-dice">
+  <div class="head"><h2>🎲 Кости брошены</h2>
+  <p>Рубрика построена на механике настольной ролевой игры. Вы выбираете школу как класс персонажа, бросаете d20 на проверку и смотрите, справилась теория с материалом или нет. Провал — такой же законный результат, как успех, и обычно интереснее.</p></div>
+
+  <div class="note">В обычном варианте «бросаю кубик — разбираю, что выпало» случайность заменяет редакционный выбор темы: зритель видит фокус, а не метод. Здесь случайность работает на другое — она проверяет теорию на прочность. Аудитория смотрит не «что выпало», а «выдержит ли реализм эту вводную».</div>
+
+  <h3>Лист персонажа</h3>
+  <div class="bar">
+    <select id="dClass"></select>
+    <select id="dAdv">
+      <option value="0">обычный бросок</option>
+      <option value="1">преимущество — два независимых источника</option>
+      <option value="-1">помеха — только вторичные источники</option>
+    </select>
+    <button class="btn" id="roll">⚄ бросить</button>
+  </div>
+  <div id="rollOut"></div>
+
+  <h3 style="margin-top:26px;">Как читается бросок</h3>
+  <div class="grid">
+    <div class="card"><h4>d20 — основная проверка</h4><p>Бросок против сложности вводной. Прошёл — школа объясняет кейс. Не прошёл — объясняет частично, и вы честно показываете, где именно она буксует.</p></div>
+    <div class="card"><h4>Натуральная 20</h4><p>Критический успех: теория объясняет всё, включая деталь, которую без неё не видно. Такой ролик идёт в закреп.</p></div>
+    <div class="card"><h4>Натуральная 1</h4><p>Критический провал — лучший контент рубрики. Школа ломается на живом материале, и это ровно тот момент, ради которого существует «Доктрина».</p></div>
+    <div class="card"><h4>Преимущество и помеха</h4><p>Два независимых источника — бросаете два d20 и берёте больший. Только вторичные пересказы — берёте меньший. Прямая иллюстрация того, как работа с источниками меняет качество вывода.</p></div>
+    <div class="card"><h4>Модификаторы школы</h4><p>У каждой школы свои сильные и слабые характеристики. Реализм отлично объясняет силу и плохо — нормы. Это не баг теории, это её граница.</p></div>
+    <div class="card"><h4>Спасбросок</h4><p>Отдельный бросок в конце: выдержит ли вывод, если поменять одну вводную. Провал спасброска означает, что объяснение держалось на случайности.</p></div>
+  </div>
+
+  <h3 style="margin-top:26px;">Классы</h3>
+  <table>
+    <tr><th style="width:190px">Класс</th><th style="width:210px">Сильные характеристики</th><th>Что объясняет плохо</th></tr>
+    <tr><td><b>Реализм</b> — воин</td><td>Сила, Телосложение</td><td>нормы, идентичности, внутреннюю политику</td></tr>
+    <tr><td><b>Либерализм</b> — бард</td><td>Харизма, Интеллект</td><td>применение силы вопреки институтам</td></tr>
+    <tr><td><b>Конструктивизм</b> — волшебник</td><td>Мудрость, Харизма</td><td>материальные ограничения и ресурсы</td></tr>
+    <tr><td><b>Критическая теория</b> — плут</td><td>Мудрость, Ловкость</td><td>предсказание конкретных решений</td></tr>
+    <tr><td><b>Политэкономия</b> — следопыт</td><td>Интеллект, Сила</td><td>символическую политику и престиж</td></tr>
+    <tr><td><b>Копенгагенская школа</b> — жрец</td><td>Харизма, Мудрость</td><td>рутинную политику вне режима угрозы</td></tr>
+  </table>
+
+  <h3 style="margin-top:26px;">Характеристики аналитика</h3>
+  <table>
+    <tr><th style="width:170px">Характеристика</th><th>Что проверяет в разборе</th></tr>
+    <tr><td>💪 Сила</td><td>материальные ресурсы: военные, экономические, территориальные</td></tr>
+    <tr><td>🤸 Ловкость</td><td>манёвр, скорость реакции, способность менять позицию</td></tr>
+    <tr><td>🛡️ Телосложение</td><td>устойчивость режима или института к давлению</td></tr>
+    <tr><td>🧠 Интеллект</td><td>данные, документы, доказательная база</td></tr>
+    <tr><td>👁️ Мудрость</td><td>контекст, исторический опыт, чутьё на скрытые мотивы</td></tr>
+    <tr><td>🗣️ Харизма</td><td>нарратив, легитимность, способность убедить аудиторию</td></tr>
+  </table>
+
+  <h3 style="margin-top:26px;">Механика ролика, 60–90 секунд</h3>
+  <div class="grid">
+    <div class="card"><h4>0–5 сек</h4><p>Кости на бархате. «Сегодня играю за реализм. Посмотрим, выдержит ли».</p></div>
+    <div class="card"><h4>5–15 сек</h4><p>Вводная: регион, актор, инструмент, горизонт. Крупные планы граней.</p></div>
+    <div class="card"><h4>15–20 сек</h4><p>Бросок d20 против сложности. Результат виден зрителю раньше, чем разбор.</p></div>
+    <div class="card"><h4>20–70 сек</h4><p>Разбор в рамках выпавшего результата. Обязательно имя учёного или документ — иначе это болтовня.</p></div>
+    <div class="card"><h4>70–85 сек</h4><p>Спасбросок: меняем одну вводную и проверяем, устоял ли вывод.</p></div>
+    <div class="card"><h4>Финал</h4><p>«За какую школу играть в следующий раз — пишите в комментариях».</p></div>
+  </div>
+
+  <h3 style="margin-top:26px;">Вариации</h3>
+  <div class="grid">
+    <div class="card"><h4>Кампания</h4><p>Сквозной сезон: одна школа ведёт несколько выпусков подряд, результаты накапливаются. К финалу видно, где у неё потолок.</p></div>
+    <div class="card"><h4>Партия из двух</h4><p>Два эксперта берут разные классы на одну вводную. Спор возникает сам, подводить к нему не надо.</p></div>
+    <div class="card"><h4>Мастер подземелья</h4><p>Гость подкаста задаёт вводную и меняет её по ходу разбора. Формат смыкается с «Кабинетом кризиса».</p></div>
+    <div class="card"><h4>Студенческая версия</h4><p>Вместо параметров выпадает билет: три термина, надо связать в один ответ. Тренажёр к экзамену и воронка в «Доктрину».</p></div>
+    <div class="card"><h4>Проклятая кость</h4><p>Раз в сезон вводная подобрана так, что не работает ни одна школа. Разбор превращается в разговор о границах теории.</p></div>
+    <div class="card"><h4>Реквизит</h4><p>Настоящий набор для настольных игр: d20, d6, d4. Латунь или мрамор, бархат бургунди, отдельно записанный звук броска, крупный план руки.</p></div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="s-projects">
+  <div class="head"><h2>🌟 Спецпроекты</h2>
+  <p>У спецпроекта есть начало, конец и артефакт на выходе. Он не растворяется в ленте — на него можно сослаться в заявке на грант и в разговоре с редактором.</p></div>
+
+  <details class="tg" open><summary>👩‍💼 «За столом» — женщины в дипломатии и безопасности</summary>
+    <p>Название читается и по-русски, и как отсылка к формуле women at the table. Резервные: «Право голоса», «Женская нота», «Мадам посол». Проект запускается не с нуля: лонгрид про женщин, повлиявших на договоры безопасности, уже написан — задача развернуть его в серию.</p>
+    <p><b>Герои первой волны:</b> Индира Ганди и Симлское соглашение · Альва Мюрдаль на женевских переговорах по разоружению · Роуз Готтемёллер и ДСНВ · Элейн Уайт Гомес и Договор о запрещении ядерного оружия · Могерини, Шмид и Шерман на переговорах по СВПД · Кэтрин Эштон · Моника Маквильямс и Белфастское соглашение · Мириам Коронель-Феррер и Бангсаморо · Лейма Гбови и женское движение Либерии.</p>
+    <p><b>Состав проекта:</b> 12 портретов каруселями и рилсами · лонгрид-основа в Telegram · лид-магнит «досье переговорщиц» с источниками · эпизод подкаста с практикующей гостьей · открытый вебинар · финальный артефакт — альманах или мини-курс на четыре занятия.</p>
+    <p><b>Якоря:</b> 31 октября — годовщина резолюции 1325 Совета Безопасности ООН. 8 марта — только с содержанием, без поздравлений.</p>
+    <p><b>Обязательно до старта:</b> перепроверить все цифры готового лонгрида по первичным источникам, заменить вторичные ссылки.</p>
+  </details>
+
+  <details class="tg"><summary>☢️ «Верификация» — контроль над вооружениями</summary>
+    <p>Контроль над вооружениями держится не на обещаниях, а на проверке — отсюда название. Тема примыкает к диссертации, обеспечена реальной экспертизой и безупречно проходит клиренс-тест: это механизм, а не позиция.</p>
+    <p><b>Каркас:</b> ДНЯО и три опоры, которые конфликтуют · ДВЗЯИ и ратификационный порог · ДСНВ — статус проверять перед публикацией · РСМД и что изменилось в Европе · Открытое небо как доверие через проверку · КБТО без механизма верификации · КХО и ОЗХО как работающая инспекция · Договор о торговле оружием · Договор о запрещении ядерного оружия · космический блок: Договор о космосе, PAROS, Соглашения Артемиды.</p>
+    <p><b>Форматы:</b> карточки договоров в единой рамке (год, кто, что запрещает, как проверяют, статус) · объяснялка «как вообще проверяют» — инспекции, спутники, сейсмические станции · лонгрид «что умерло и что осталось» · глоссарий как лид-магнит · разговор с экспертом · космический блок в видеоэссе.</p>
+  </details>
+
+  <details class="tg"><summary>🚀 Космическая безопасность — флагман экспертизы</summary>
+    <p>Четыре части: почему космос стал доменом безопасности · кто в нём игроки · право и его дыры · что такое секьюритизация космоса. Последняя часть строится на собственном диссертационном материале и одновременно является витриной курса «Секьюритизация».</p>
+  </details>
+
+  <details class="tg"><summary>📐 Как запускать любой спецпроект</summary>
+    <p>Финальный артефакт планируется до первого поста, а не после последнего. Дальше: собрать фактурную базу и проверить источники → сверстать единую рамку серии → снять три единицы батчем → назначить событийный якорь → выпустить серию с постоянным ритмом → собрать всё в артефакт → артефакт становится лид-магнитом или продуктом.</p>
+  </details>
+</section>
+
+<!-- PODCAST -->
+<section id="s-pod">
+  <div class="head"><h2>🎙 Подкаст</h2>
+  <p>Три концепции из архива не конкурируют, а складываются в один канал с тремя линиями. Ничего не выбрасывается.</p></div>
+  <table style="margin-bottom:20px;">
+    <tr><th>Линия</th><th>Откуда</th><th>Кому</th><th>Длина</th></tr>
+    <tr><td><b>«Депеша»</b> — основная</td><td>концепция «Без Опасности»: интервью и разборы</td><td>Марат, Вера, эксперты</td><td>40–60 мин</td></tr>
+    <tr><td><b>«Школа Дипломата»</b> — плейлист-сезон</td><td>всё готовое, включая черновик про историю дипломатии</td><td>Лиза, Соня, школьники</td><td>15–25 мин</td></tr>
+    <tr><td><b>«Партия»</b> — рубрика внутри «Депеши»</td><td>новое</td><td>все</td><td>30–45 мин</td></tr>
+  </table>
+  <div class="note">Готовый архив: шесть эпизодов «Школы Дипломата», из них два опубликованы с полными сценариями, плюс черновик про историю дипломатии, который просится в третий эпизод — тема там до сих пор пустая. Звуковая палитра прописана: пергамент, печать, колокол, гул конференц-зала. Музыка титров подобрана.</div>
+
+  <h3>Форматы эпизодов</h3>
+  <div class="grid">
+    <div class="card"><h4>♟️ Партия</h4><p>Гость играет и одновременно разбирает кейс. Шахматный словарь как аналитическая рамка: гамбит — жертва ради позиции, размен — что отдаём и что получаем, цугцванг — любой ход ухудшает. В момент жертвы фигуры: «а в вашем кейсе кто здесь пешка?»</p></div>
+    <div class="card"><h4>🕶️ Слепая депеша</h4><p>Анонимизированный кейс: акторы обозначены буквами, страна не названа. В конце раскрываем. Снимает предвзятость и безупречен по клиренс-тесту.</p></div>
+    <div class="card"><h4>🔴 Красная команда</h4><p>Двадцать минут гость аргументирует позицию, с которой не согласен. Техника из арсенала структурированного анализа.</p></div>
+    <div class="card"><h4>📂 Три документа</h4><p>Гость приносит речь, договор и доклад и показывает, что в них видит. Учит читать, а не пересказывать.</p></div>
+    <div class="card"><h4>✉️ Прогноз в конверте</h4><p>В начале сезона гости записывают прогноз, в финале вскрываем и считаем попадания.</p></div>
+    <div class="card"><h4>🌐 Перевод</h4><p>Одна речь на английском: что сказано, что подразумевается, как перевели СМИ. Прямая витрина «Брифинга».</p></div>
+    <div class="card"><h4>⏱️ Кабинет кризиса</h4><p>Симуляция: вводная, двадцать минут на решение, вводные меняются по ходу. Лучший формат для нарезки на клипы.</p></div>
+    <div class="card"><h4>📕 Библиотека</h4><p>Книга, изменившая оптику гостя — с полными выходными данными.</p></div>
+    <div class="card"><h4>⚔️ Двойной агент</h4><p>Два гостя разных школ разбирают один кейс независимо, потом слушают друг друга.</p></div>
+    <div class="card"><h4>🪑 Один стул</h4><p>Сорок пять минут с одним человеком только о карьере: как попал, что решило, о чём жалеет.</p></div>
+  </div>
+
+  <h3 style="margin-top:24px;">Техника</h3>
+  <details class="tg"><summary>Простой путь: Zoom</summary><p>Запись в режиме галереи, шеринг доски для партии. Минус — сжатый и обработанный звук. Лайфхак: гость параллельно пишет голос на диктофон телефона, это резервная дорожка.</p></details>
+  <details class="tg"><summary>Качество: раздельные дорожки</summary><p>Zencastr (есть бесплатный тариф) или Riverside.fm записывают звук каждого участника локально на его устройстве, без сжатия видеозвонка. Встроенной шахматной доски там нет — партию тогда через OBS или простой Zoom.</p></details>
+  <details class="tg"><summary>Продвинутый: OBS Studio</summary><p>Источники: Browser Source с партией на lichess, веб-камера, окно с лицом гостя, микрофон, звук приложения. Две сцены — «только лица» и «доска и лица» — переключаются одной кнопкой. Запись прямо в OBS, стримить не обязательно.</p></details>
+  <details class="tg"><summary>Оборудование и монтаж</summary><p>Ориентир: микрофон уровня Shure SM7B или Rode NT1, интерфейс Focusrite Scarlett 2i2, наушники Audio-Technica ATH-M50x. Монтаж: Audacity или Adobe Audition. Свет для старта — сесть лицом к окну днём.</p></details>
+</section>
+
+<!-- COLLAB -->
+<section id="s-collab">
+  <div class="head"><h2>🤝 Коллаборации, вебинары, воркшопы</h2>
+  <p>Прирост даёт не охват партнёра, а его рекомендация. Поэтому форматы, где вы работаете вместе, всегда сильнее взаимных репостов.</p></div>
+
+  <h3>Кого выбирать</h3>
+  <table style="margin-bottom:18px;">
+    <tr><th style="width:210px">Тип партнёра</th><th>Что даёт</th><th>Риск</th></tr>
+    <tr><td>МО и политология</td><td>прямое совпадение аудитории</td><td>подписчики пересекаются, эффект ниже ожидаемого</td></tr>
+    <tr><td>Языковые блогеры</td><td>идеальная воронка в «Брифинг»</td><td>нужен академический регистр, не «инглиш за месяц»</td></tr>
+    <tr><td>Образование и поступление</td><td>тёплая аудитория под гайды</td><td>проверить, не конкурент ли по продукту</td></tr>
+    <tr><td>Думающий лайфстайл, книжные</td><td>новая аудитория, а не соседняя</td><td>размытие темы, нужен точный формат</td></tr>
+    <tr><td>Клубы, think tanks</td><td>репутационный вес</td><td>долгие согласования</td></tr>
+    <tr><td>Смежные экспертизы</td><td>взаимное усиление на конкретной теме</td><td>без общего кейса бессмысленно</td></tr>
+  </table>
+  <div class="note">Фильтр: клиренс-тест на партнёра · совпадает ли регистр · пересечение аудиторий меньше половины · есть ли тема, где каждый умнее в своей части · что даю и что получаю зафиксировано до съёмки.</div>
+
+  <details class="tg"><summary>Форматы — от лёгкого к тяжёлому</summary>
+    <p>Обмен сторис — тестовое касание · гость в рилсе, двадцать секунд его реплики в вашем формате · двойной разбор: одно событие, два поста, разные оптики, один день · совместный эфир на сорок минут с заранее собранными вопросами · гест-пост в Telegram · совместный вебинар с общей регистрацией · серия из трёх выпусков, если сработало · совместный продукт — только после трёх успешных касаний.</p>
+  </details>
+  <details class="tg"><summary>Шаблон первого сообщения</summary>
+    <p>Здравствуйте, [имя]. Меня зовут Даяна, я веду Madam Securité — разбираю, как устроена мировая политика. Читаю вас давно и заметила, что мы говорим об одном и том же с разных сторон: вы про [их тема], я про [моя].<br><br>Есть конкретная идея: [формат] на тему [тема]. От меня — [что даю], от вас — [что прошу]. Займёт примерно [время].<br><br>Если формат не подходит, скажите — у меня есть ещё пара вариантов. Если интересно, скину структуру.<br><br>Правила: не просить без конкретики · не начинать с трёх абзацев комплиментов · назвать формат и объём сразу · дать возможность отказаться без неловкости.</p>
+  </details>
+  <details class="tg"><summary>После коллаборации</summary>
+    <p>Замерить прирост за 72 часа, а не за день · проверить качество: сколько новых досмотрели следующий пост · поблагодарить и сразу предложить второй формат, если сработало · занести в таблицу партнёров: кто, формат, дата, результат.</p>
+  </details>
+
+  <h3 style="margin-top:24px;">Вебинар на 90 минут</h3>
+  <table style="margin-bottom:16px;">
+    <tr><th style="width:120px">Блок</th><th style="width:80px">Минуты</th><th>Что происходит</th></tr>
+    <tr><td>Вход</td><td>0–10</td><td>сбор, что будет, обещание «дойдите до конца — там разбор»</td></tr>
+    <tr><td>Содержание</td><td>10–55</td><td>реальная польза и метод, а не тизер. Три блока по пятнадцать минут</td></tr>
+    <tr><td>Разбор</td><td>55–75</td><td>живой разбор материала участников или общего кейса</td></tr>
+    <tr><td>Продукт</td><td>75–90</td><td>как это устроено системно, что открывается, дедлайн, ответы</td></tr>
+  </table>
+  <div class="note">Пользы должно быть столько, чтобы человек ушёл довольным даже без покупки. Продающий блок не прячем и не извиняемся за него. Дедлайн настоящий. Запись даём на 48 часов, не навсегда.</div>
+
+  <div class="grid">
+    <div class="card"><h4>За три недели</h4><p>Тема и обещание одной строкой · дата с учётом часовых поясов · страница регистрации · анонс в ленте, сторис и Telegram.</p></div>
+    <div class="card"><h4>За две недели</h4><p>Сценарий и слайды · три прогревные единицы по теме · проверить Zoom: лимит, запись, комната ожидания.</p></div>
+    <div class="card"><h4>За неделю и за день</h4><p>Напоминания за неделю, за сутки, за два часа · прогон вслух с таймером · ответы на пять частых возражений · ссылка на оплату готова заранее.</p></div>
+    <div class="card"><h4>После</h4><p>Запись и материалы в течение двенадцати часов · письмо тем, кто не дошёл · дожим 48 часов, три касания, потом тишина · посчитать воронку целиком.</p></div>
+  </div>
+
+  <h3 style="margin-top:24px;">Воркшоп — это не вебинар</h3>
+  <p style="max-width:660px;">На вебинаре слушают, на воркшопе работают руками. Человек уходит с артефактом: заполненной картой конфликта, размеченной статьёй, написанным абзацем. Это и есть лучший аргумент за платный продукт.</p>
+  <div class="grid">
+    <div class="card"><h4>Правила</h4><p>Максимум двадцать человек · рабочий лист выдаётся до начала · 30% объяснение и 70% работа · минимум три работы разобрать вслух · 120 минут с перерывом.</p></div>
+    <div class="card"><h4>Цена</h4><p>Символические 990–1990 ₽ отсеивают случайных и заметно повышают конверсию в курс. Бесплатный воркшоп собирает больше людей и меньше покупателей.</p></div>
+    <div class="card"><h4>Готовые темы</h4><p>Разметка одной статьи → «Брифинг» · пять линз за час → «Доктрина» · карта конфликта → «Война и мир» · досье страны за час → «Сферы влияния» · конкурирующие гипотезы → «Ситуэйшн Рум» · первый абзац мотивационного письма → «Протокол поступления».</p></div>
+  </div>
+</section>
+
+<!-- MARKETING -->
+<section id="s-mk">
+  <div class="head"><h2>📈 Маркетинг</h2>
+  <p>Приёмы, которые работают именно в экспертном контенте — без агрессии, без обещаний быстрого результата, без того, что не пройдёт клиренс-тест.</p></div>
+  <details class="tg"><summary>Правило первых трёх секунд</summary><p>Хук решает всё. Первый кадр не должен содержать логотип, приветствие и слово «сегодня». Он должен содержать конфликт, цифру или обещание. Три версии хука на один сценарий — снимаются подряд, тестируется лучшая.</p></details>
+<details class="tg"><summary>Удержание важнее охвата</summary><p>Алгоритмы 2026 года ранжируют по досмотрам и повторным просмотрам, а не по лайкам. Практический вывод: короткий ролик с полным досмотром сильнее длинного с обрывом на середине. Резать безжалостно.</p></details>
+<details class="tg"><summary>Репост — главная метрика</summary><p>Сохранение говорит «пригодится мне», репост говорит «это про нас». Второе даёт рост. Формат под репост: узнаваемая ситуация, тест, точная формулировка того, что человек чувствовал, но не мог назвать.</p></details>
+<details class="tg"><summary>Петля вместо финала</summary><p>Последняя секунда ролика склеивается с первой по смыслу — зритель уходит на второй круг. Повторный просмотр считается алгоритмом отдельно.</p></details>
+<details class="tg"><summary>Серийность вместо разовых удач</summary><p>Одиночный вирусный ролик не строит аудиторию. Строит рубрика, у которой есть имя, ритуал и ожидание. «Кости брошены», «Книга недели», «Депеша» — это не темы, это привычки зрителя.</p></details>
+<details class="tg"><summary>Лестница осведомлённости</summary><p>Аудитория делится на пять ступеней: не знает о проблеме → знает о проблеме → знает решения → знает вас → готова купить. Контент нужен на каждой. Ошибка большинства запусков — говорить только с последней ступенью.</p></details>
+<details class="tg"><summary>Правило 70 / 20 / 10</summary><p>70% контента — польза и метод, 20% — личность и закулисье, 10% — прямая продажа. В окно продаж пропорция меняется на 40 / 20 / 40, но только на шесть дней.</p></details>
+<details class="tg"><summary>Кодовое слово в комментариях</summary><p>Вместо «ссылка в шапке» — «напишите слово БРИФ в комментариях». Комментарий поднимает ролик, автоответ уводит в личные сообщения, диалог начинается в тёплом канале.</p></details>
+<details class="tg"><summary>Контент-якорь</summary><p>Одна большая единица (видеоэссе, лонгрид, вебинар) раскладывается на 8–12 малых. Производство падает втрое, связность растёт.</p></details>
+<details class="tg"><summary>Предзапись вместо холодного старта</summary><p>Две-три недели бесплатного листа ожидания дают замер спроса до объявления цены, список для личных сообщений и ощущение очереди вместо пустого зала.</p></details>
+<details class="tg"><summary>Настоящий дефицит</summary><p>Дедлайн, который реально закрывается, и лимит мест, который реально соблюдается. Один раз продлить окно — и все следующие дедлайны перестают работать навсегда.</p></details>
+<details class="tg"><summary>Ступень входа</summary><p>Между бесплатным гайдом и курсом за 25 тысяч нужна ступень за 1–2 тысячи: воркшоп, разбор, мини-интенсив. Человек, заплативший однажды, платит второй раз в разы охотнее.</p></details>
+<details class="tg"><summary>Социальное доказательство процесса</summary><p>Показывать не только результаты учеников, но и процесс: как проходит встреча, как выглядит тетрадь, что пишут в чате потока. Это снимает главное возражение — «а что там будет».</p></details>
+<details class="tg"><summary>UGC и цитирование аудитории</summary><p>Ответ подписчика, вынесенный в отдельный пост, даёт две вещи: контент без затрат и мотивацию остальным писать. Рубрика «Молодые думают» именно про это.</p></details>
+<details class="tg"><summary>Коллаборация как обмен доверием</summary><p>Прирост даёт не охват партнёра, а его рекомендация. Поэтому формат «двойной разбор» работает лучше, чем взаимный репост.</p></details>
+<details class="tg"><summary>Ритм важнее объёма</summary><p>Три единицы в неделю каждую неделю сильнее, чем десять в один месяц и ноль в следующий. Съёмки батчами, буферная неделя каждые шесть недель.</p></details>
+<details class="tg"><summary>Первый час</summary><p>Ответы на комментарии в первый час после публикации напрямую влияют на дальнейшую выдачу. Планировать выход тогда, когда есть эти шестьдесят минут.</p></details>
+<details class="tg"><summary>Клиренс-фильтр поверх всего</summary><p>Ни одна маркетинговая техника не отменяет теста «актив или риск через три года». Провокация в хуке допустима, провокация в позиции — нет.</p></details>
+
+</section>
+
+<!-- METRICS -->
+<section id="s-metrics">
+  <div class="head"><h2>📊 Метрики</h2>
+  <p>Мерить раз в неделю, десять минут. Последняя колонка редактируется — вписывайте текущее значение.</p></div>
+  <table>
+    <tr><th style="width:210px">Метрика</th><th>Что показывает</th><th>Хороший знак</th><th style="width:110px">Сейчас</th></tr>
+    <tr><td><b>Досматриваемость Reels</b></td><td>доля досмотревших до конца</td><td>растёт от недели к неделе</td><td class='inp' contenteditable data-mk='m0'></td></tr><tr><td><b>Повторные просмотры</b></td><td>сколько раз ролик пересматривали</td><td>выше нуля на роликах с петлёй</td><td class='inp' contenteditable data-mk='m1'></td></tr><tr><td><b>Сохранения на 1000 охвата</b></td><td>главный индикатор полезности</td><td>выше на каруселях-разборах</td><td class='inp' contenteditable data-mk='m2'></td></tr><tr><td><b>Репосты на 1000 охвата</b></td><td>индикатор идентификации</td><td>выше на тестах и точных формулировках</td><td class='inp' contenteditable data-mk='m3'></td></tr><tr><td><b>Подписки с единицы контента</b></td><td>сколько человек подписалось</td><td>видно, какая рубрика приводит людей</td><td class='inp' contenteditable data-mk='m4'></td></tr><tr><td><b>Комментарии по существу</b></td><td>не эмодзи, а мысли</td><td>показывает качество аудитории</td><td class='inp' contenteditable data-mk='m5'></td></tr><tr><td><b>Переходы в Telegram</b></td><td>из шапки и из кодового слова</td><td>здоровье воронки</td><td class='inp' contenteditable data-mk='m6'></td></tr><tr><td><b>Заявки на лид-магнит</b></td><td>в неделю</td><td>верх воронки</td><td class='inp' contenteditable data-mk='m7'></td></tr><tr><td><b>Открываемость писем и сообщений</b></td><td>если ведётся рассылка</td><td>тепло базы</td><td class='inp' contenteditable data-mk='m8'></td></tr><tr><td><b>Конверсия предзаписи в оплату</b></td><td>ключевая цифра запуска</td><td>считать по каждому потоку</td><td class='inp' contenteditable data-mk='m9'></td></tr>
+  </table>
+  <div class="note">Правило: смотреть на тренд за месяц, а не на отдельный пост. Один провальный ролик ничего не значит, четыре подряд в одной рубрике — значат.</div>
+</section>
+
+<!-- DATA -->
+<section id="s-data">
+  <div class="head"><h2>💾 Данные</h2>
+  <p>Всё, что вы отмечаете, сохраняется в этом браузере. При смене устройства или очистке кэша данные не переедут — поэтому раз в месяц делайте выгрузку.</p></div>
+  <div class="bar">
+    <button class="btn" id="expBtn">выгрузить резервную копию</button>
+    <button class="btn ghost" id="impBtn">загрузить копию</button>
+    <input type="file" id="impFile" accept="application/json" style="display:none;">
+    <button class="btn ghost" id="clrBtn">сбросить всё</button>
+  </div>
+  <div class="note">Если файл лежит на GitHub Pages, Netlify или Vercel, его можно встроить прямо в страницу Notion через команду /embed — и работать с системой не выходя из Notion.</div>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+const TOPICS = [{"t": "Как я поступила в магистратуру в США", "a": "p", "c": "story", "e": "m", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Мой путь: МГИМО → аспирантура в США", "a": "p", "c": "story", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Что бы я посоветовала себе пять лет назад", "a": "p", "c": "story", "e": "l", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Почему я выбрала международные отношения", "a": "p", "c": "story", "e": "l", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Пять поворотных точек на моём пути", "a": "p", "c": "story", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Ошибки, которые я совершала в учёбе", "a": "p", "c": "story", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как я справилась с синдромом самозванца", "a": "p", "c": "story", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Путь от олимпиады до международной карьеры", "a": "p", "c": "story", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как я выиграла «Умники и умницы» и что это дало", "a": "p", "c": "story", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Валдай: как я туда попала и что там происходит", "a": "p", "c": "story", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Первый отказ, который меня сломал, и что было дальше", "a": "p", "c": "story", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как выглядит поступление в PhD изнутри", "a": "p", "c": "story", "e": "h", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Итоги сессии и семестра PhD", "a": "p", "c": "life", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Классы на второй семестр", "a": "p", "c": "life", "e": "l", "s": 1, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Первый день семестра — смонтировать и выложить", "a": "p", "c": "life", "e": "l", "s": 1, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Пейперы и конференции: подачи, отказы, принятия", "a": "p", "c": "life", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как устроен день PhD-студента в США", "a": "p", "c": "life", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Что такое qualifying exams и почему их боятся", "a": "p", "c": "life", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как я пишу главу диссертации", "a": "p", "c": "life", "e": "h", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Что происходит на академической конференции на самом деле", "a": "p", "c": "life", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Сколько я читаю в неделю и как это выдерживаю", "a": "p", "c": "life", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Работа с научным руководителем: как это устроено", "a": "p", "c": "life", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Рефлексия по семестру", "a": "p", "c": "life", "e": "l", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Жизнь в Атланте: что удивило", "a": "p", "c": "life", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Русскоязычная академическая среда за рубежом", "a": "p", "c": "life", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как я учу французский", "a": "p", "c": "edu", "e": "l", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как я изучала английский", "a": "p", "c": "edu", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Три техники изучения языков", "a": "p", "c": "edu", "e": "l", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Мои любимые ресурсы для языков", "a": "p", "c": "edu", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как учиться и не выгорать", "a": "p", "c": "edu", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как совмещать учёбу и личную жизнь", "a": "p", "c": "edu", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Топ-5 книг, повлиявших на моё мышление", "a": "p", "c": "edu", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Что читаю сейчас — книга недели", "a": "p", "c": "edu", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Мои техники планирования", "a": "p", "c": "edu", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Привычки, которые усилили фокус", "a": "p", "c": "edu", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Что помогает держать ритм", "a": "p", "c": "edu", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Мой подход к продуктивности", "a": "p", "c": "edu", "e": "l", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как я веду записи по учёбе — обзор Notion", "a": "p", "c": "edu", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как читать академическую статью за 20 минут", "a": "p", "c": "edu", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как я работаю с источниками и цитатами", "a": "p", "c": "edu", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Zotero, Obsidian, Notion: что где", "a": "p", "c": "edu", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "День из жизни дипломата", "a": "p", "c": "aes", "e": "m", "s": 2, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Утро будущего дипломата", "a": "p", "c": "aes", "e": "l", "s": 2, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Что в моём портфеле", "a": "p", "c": "aes", "e": "l", "s": 2, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Бьюти-рутина как элемент дисциплины", "a": "p", "c": "aes", "e": "l", "s": 2, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Что я беру на конференции", "a": "p", "c": "aes", "e": "l", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Любимые места для учёбы", "a": "p", "c": "aes", "e": "l", "s": 2, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Мой рацион и любимый кофе", "a": "p", "c": "aes", "e": "l", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Сезонная рутина", "a": "p", "c": "aes", "e": "l", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Лайфхаки продуктивности", "a": "p", "c": "aes", "e": "l", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Баланс между умом, красотой и действием", "a": "p", "c": "aes", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Как выглядит интеллектуальный стиль", "a": "p", "c": "aes", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "МО и эстетика: можно ли быть стильной и умной", "a": "p", "c": "aes", "e": "m", "s": 2, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Образы, вдохновлённые дипломатией", "a": "p", "c": "aes", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Эстетика подполей МО", "a": "p", "c": "aes", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Эстетика студента-международника", "a": "p", "c": "aes", "e": "l", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Красная помада как рабочий инструмент", "a": "p", "c": "aes", "e": "l", "s": 0, "cl": "salon", "pl": ["ig_p", "sh"]}, {"t": "Почему я делаю блог", "a": "p", "c": "meta", "e": "l", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Зачем я делюсь знаниями публично", "a": "p", "c": "meta", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Какой образ я создаю", "a": "p", "c": "meta", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Почему важно говорить умно простыми словами", "a": "p", "c": "meta", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Где грань между элитарностью и доступностью", "a": "p", "c": "meta", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Что меня бесит в IR-сообществе", "a": "p", "c": "meta", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Почему я не боюсь говорить по-другому", "a": "p", "c": "meta", "e": "l", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Как я справляюсь с «а вдруг я слишком»", "a": "p", "c": "meta", "e": "m", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Генсек ООН 2035: почему это не шутка", "a": "p", "c": "meta", "e": "m", "s": 0, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Я в МО в параллельных вселенных", "a": "p", "c": "meta", "e": "l", "s": 2, "cl": "self", "pl": ["ig_p", "sh"]}, {"t": "Бузворды российского политолога", "a": "p", "c": "fmt", "e": "l", "s": 2, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Email-культура: американский профессор vs русский", "a": "p", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Что после МГИМО: Патрики и контраст с Америкой", "a": "p", "c": "fmt", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Пять слов для международника на английском", "a": "p", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Лето международника: тренды, ивенты, что читать", "a": "p", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Рубрика «Вопросы»: стикер → ответ", "a": "p", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Что вы сейчас изучаете — интерактив", "a": "p", "c": "fmt", "e": "l", "s": 2, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Что вас вдохновляет в дипломатии — опрос", "a": "p", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Знаешь, что человек профи, если он говорит…", "a": "p", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Три ошибки молодых международников", "a": "p", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Мемы международника: серия", "a": "p", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Йога и МО: личная практика + инструмент влияния Индии", "a": "p", "c": "fmt", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Специализации в МО — русская версия", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Специализации в МО — английская версия", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Индекс бигмака и нижнего белья", "a": "p", "c": "expl", "e": "l", "s": 2, "cl": "mech", "pl": ["ig_p", "sh"]}, {"t": "Индекс скайскрепера и попкорна", "a": "p", "c": "expl", "e": "l", "s": 2, "cl": "mech", "pl": ["ig_p", "sh"]}, {"t": "Индекс помады и каблука — лёгкая версия", "a": "p", "c": "expl", "e": "l", "s": 2, "cl": "mech", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: биобезопасность", "a": "p", "c": "career", "e": "m", "s": 3, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: разведка", "a": "p", "c": "career", "e": "m", "s": 3, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: кибербезопасность и tech policy", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: ядерное нераспространение", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: санкции и экономическое принуждение", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: климатическая безопасность", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: морская безопасность", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: миграция", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Если не космос: глобальное здравоохранение", "a": "p", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_p", "sh"]}, {"t": "Факультеты Хогвартса → карьеры в МО", "a": "b", "c": "pop", "e": "m", "s": 2, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "Наблюдения — мостовой формат", "a": "b", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "ig_m", "tg"]}, {"t": "Женщины влияния без титула: Винтур, Санчес", "a": "b", "c": "glam", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_p", "ig_m", "tg"]}, {"t": "Космическая безопасность — серия из 4 частей", "a": "b", "c": "space", "e": "h", "s": 0, "cl": "serial", "pl": ["ig_p", "ig_m", "tg"]}, {"t": "Как читать доклады think tank", "a": "b", "c": "method", "e": "m", "s": 2, "cl": "mech", "pl": ["ig_p", "ig_m", "tg"]}, {"t": "Что такое soft power", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Что такое hard power", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Агреман — зачем он нужен", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Чем отличается альянс от союза", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Почему Вестфальский мир важнее всех", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Вестфальская система в образах", "a": "m", "c": "expl", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Дипломатия — это не светские рауты", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Кто такие реальные международники", "a": "m", "c": "expl", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Что такое дипломатическая нота", "a": "m", "c": "expl", "e": "l", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Что такое дипломатический этикет", "a": "m", "c": "expl", "e": "l", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Язык тела дипломатов", "a": "m", "c": "expl", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Как правильно отказывать в международной коммуникации", "a": "m", "c": "expl", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Что нельзя говорить на переговорах", "a": "m", "c": "expl", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Чем дипломат отличается от госслужащего", "a": "m", "c": "expl", "e": "l", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "IR vs PR: в чём разница", "a": "m", "c": "expl", "e": "l", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Пять мифов о международных отношениях", "a": "m", "c": "expl", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Мифы о дипломатии XXI века", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Дипломатия и технологии", "a": "m", "c": "expl", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Хард-пауэр сегодня: как она выглядит", "a": "m", "c": "expl", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Нейтралитет: как он работает юридически", "a": "m", "c": "expl", "e": "m", "s": 1, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Торговая война: определение, протекционизм, эмбарго", "a": "m", "c": "expl", "e": "m", "s": 2, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Виды разведки: OSINT, HUMINT, SIGINT, GEOINT, FININT", "a": "m", "c": "expl", "e": "m", "s": 2, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Что такое think tanks: обзор институтов", "a": "m", "c": "expl", "e": "m", "s": 2, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Почему посольства нельзя штурмовать даже в зоне войны", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Го — лучшая игра для дипломатов", "a": "m", "c": "expl", "e": "m", "s": 3, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Дипломатия панд", "a": "m", "c": "expl", "e": "l", "s": 1, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Дипломатия мороженого: дондурма дипломасиси", "a": "m", "c": "expl", "e": "l", "s": 1, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Дипломатия через подарки-животных", "a": "m", "c": "expl", "e": "l", "s": 1, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Словарь дипломата — постоянная рубрика", "a": "m", "c": "expl", "e": "l", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Как устроен дипломатический ранг", "a": "m", "c": "expl", "e": "l", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Что такое верительные грамоты", "a": "m", "c": "expl", "e": "l", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Персона нон грата: механика высылки", "a": "m", "c": "expl", "e": "l", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Теории МО простыми словами — серия", "a": "m", "c": "theory", "e": "m", "s": 1, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Реализм vs либерализм: теория против практики", "a": "m", "c": "theory", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Зачем студенту конструктивизм", "a": "m", "c": "theory", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Копенгагенская школа: что такое секьюритизация", "a": "m", "c": "theory", "e": "h", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Дилемма безопасности на пальцах", "a": "m", "c": "theory", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Баланс сил и баланс угроз: Уолтц против Уолта", "a": "m", "c": "theory", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Теория зависимости: Пребиш и Валлерстайн", "a": "m", "c": "theory", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Уровни анализа Уолтца", "a": "m", "c": "theory", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Buck-passing: Кристенсен и Снайдер", "a": "m", "c": "theory", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Критическая теория в МО: зачем она нужна", "a": "m", "c": "theory", "e": "h", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Феминистская оптика в теории МО", "a": "m", "c": "theory", "e": "h", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Региональные комплексы безопасности: Бузан и Вейвер", "a": "m", "c": "theory", "e": "h", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Пять линз: одно событие через пять теорий", "a": "m", "c": "theory", "e": "h", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Дипломатия и театр", "a": "m", "c": "aes", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Одежда как инструмент влияния", "a": "m", "c": "aes", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Soft power и реклама духов", "a": "m", "c": "aes", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Визитная карточка дипломата: стиль как инструмент", "a": "m", "c": "aes", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Архитектура — язык международного влияния", "a": "m", "c": "aes", "e": "h", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Тишина и пауза в переговорах", "a": "m", "c": "aes", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Fashion, opera и negotiation", "a": "m", "c": "aes", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Как МО формирует культурный код поколений", "a": "m", "c": "aes", "e": "h", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Мода как политический инструмент — серия", "a": "m", "c": "aes", "e": "h", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "МО в сердце: эстетика", "a": "m", "c": "aes", "e": "l", "s": 2, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Catwalk of Ideas: эстетика жестов и речи", "a": "m", "c": "aes", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Цитата недели с расшифровкой", "a": "m", "c": "fmt", "e": "l", "s": 3, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "IR Quote + реакция", "a": "m", "c": "fmt", "e": "l", "s": 3, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Вы не дипломат, если…", "a": "m", "c": "fmt", "e": "l", "s": 3, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "«Что это значит для нас?»", "a": "m", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Метафорические фразы по полям МО", "a": "m", "c": "fmt", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Фраза, которую никогда не скажет дипломат", "a": "m", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Цитаты IR-мыслителей с разбором", "a": "m", "c": "fmt", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Red flags в дипломатии", "a": "m", "c": "fmt", "e": "l", "s": 3, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Green flags в переговорах", "a": "m", "c": "fmt", "e": "l", "s": 3, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Red flags в студенческом комьюнити", "a": "m", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Green flags в академической среде", "a": "m", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Что настораживает в профессиональной речи", "a": "m", "c": "fmt", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Тест: какой вы тип переговорщика", "a": "m", "c": "fmt", "e": "m", "s": 3, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Миф или правда: блиц о дипломатии", "a": "m", "c": "fmt", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Твой внутренний дипломат по дате рождения", "a": "m", "c": "fmt", "e": "m", "s": 2, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Твоя ниша в МО по месяцу рождения", "a": "m", "c": "fmt", "e": "m", "s": 2, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Конструктор международника в стиле Sims", "a": "m", "c": "fmt", "e": "m", "s": 2, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Тип специалиста по дню рождения", "a": "m", "c": "fmt", "e": "m", "s": 2, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Квиз: какая ниша в МО твоя", "a": "m", "c": "fmt", "e": "m", "s": 3, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Что читает дипломат в XXI веке", "a": "m", "c": "cur", "e": "m", "s": 3, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Книга недели от Мадам", "a": "m", "c": "cur", "e": "l", "s": 3, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Три подкаста для IR", "a": "m", "c": "cur", "e": "l", "s": 3, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Reading list: Трамп и Си", "a": "m", "c": "cur", "e": "m", "s": 2, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Журналы, на которые подписаны в think tank", "a": "m", "c": "cur", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Что читать вместо новостей", "a": "m", "c": "cur", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "«Для вечернего мышления» — кураторская рубрика", "a": "m", "c": "cur", "e": "l", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Библиотека Мадам: 25 книг с изданиями и переводами", "a": "m", "c": "cur", "e": "h", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Летний reading list", "a": "m", "c": "cur", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Топовые университеты по МО: RU и ENG", "a": "m", "c": "cur", "e": "m", "s": 2, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Тренды для изучения МО", "a": "m", "c": "cur", "e": "m", "s": 1, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "МО — не холодная аналитика", "a": "m", "c": "meta", "e": "m", "s": 3, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "Почему чувствительность — сила в переговорах", "a": "m", "c": "meta", "e": "m", "s": 3, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "Что делать, если чувствуешь себя «слишком мягкой»", "a": "m", "c": "meta", "e": "m", "s": 0, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "Элитарность: вдохновлять, а не отталкивать", "a": "m", "c": "meta", "e": "m", "s": 0, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "Зачем я вообще говорю о сложном", "a": "m", "c": "meta", "e": "m", "s": 0, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "IR глазами нового поколения", "a": "m", "c": "meta", "e": "m", "s": 3, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "What they don't teach you in class", "a": "m", "c": "meta", "e": "m", "s": 3, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "Building a Personal Brand in International Relations (ENG)", "a": "m", "c": "meta", "e": "m", "s": 3, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "Личный бренд в МО — русская версия", "a": "m", "c": "meta", "e": "m", "s": 3, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "Пост-знакомство — обновить под новое позиционирование", "a": "m", "c": "meta", "e": "l", "s": 3, "cl": "self", "pl": ["ig_m", "tg"]}, {"t": "Три главные темы недели", "a": "m", "c": "digest", "e": "m", "s": 3, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Что это значит для студентов", "a": "m", "c": "digest", "e": "m", "s": 3, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "IR Digest Lite", "a": "m", "c": "digest", "e": "l", "s": 3, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Дайджест новостей", "a": "m", "c": "digest", "e": "l", "s": 1, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Десять конфликтов года — версия Foreign Policy", "a": "m", "c": "digest", "e": "m", "s": 2, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Конфликты года — версия Council on Foreign Relations", "a": "m", "c": "digest", "e": "m", "s": 1, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Топ форумов и саммитов года", "a": "m", "c": "digest", "e": "m", "s": 2, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Обзор форума в Давосе", "a": "m", "c": "digest", "e": "m", "s": 2, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Мюнхенская конференция по безопасности", "a": "m", "c": "digest", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Разбор номера Foreign Affairs — постоянная", "a": "m", "c": "digest", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Одна инфографика = одно объяснение", "a": "m", "c": "digest", "e": "l", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Событие = три смысловых слоя", "a": "m", "c": "digest", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Реакция на визит, заявление, кризис", "a": "m", "c": "digest", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Важные для международника даты — календарь", "a": "m", "c": "digest", "e": "l", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Обзоры докладов мозговых центров", "a": "m", "c": "digest", "e": "h", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Тематические недели: Африка, Китай, СНГ, Залив", "a": "m", "c": "digest", "e": "h", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Забытые конфликты — серия", "a": "m", "c": "digest", "e": "h", "s": 1, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Гренландия", "a": "m", "c": "digest", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Доктрина Монро", "a": "m", "c": "digest", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Индекс Пиццы Пентагона (pizzint.watch)", "a": "m", "c": "digest", "e": "m", "s": 2, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "City of London vs London", "a": "m", "c": "digest", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Ghost ships и Инмарсат", "a": "m", "c": "digest", "e": "m", "s": 1, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Соцопросы в сторис как контент", "a": "m", "c": "digest", "e": "l", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Женщины, повлиявшие на договоры безопасности", "a": "m", "c": "glam", "e": "h", "s": 2, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Гадалки в истории политики", "a": "m", "c": "glam", "e": "h", "s": 2, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Таро и Ленорман в мировой политике", "a": "m", "c": "glam", "e": "h", "s": 2, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Мадам Секьюрите и карты", "a": "m", "c": "glam", "e": "m", "s": 2, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Как old money управляют страной", "a": "m", "c": "glam", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Джентльменская салфетка Черчилля и Сталина", "a": "m", "c": "glam", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Переговоры на мосту: обмен шпионов", "a": "m", "c": "glam", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Занзибар против Британии: 38 минут", "a": "m", "c": "glam", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Тихая революция в Норвегии", "a": "m", "c": "glam", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Франция и НАТО: обида де Голля", "a": "m", "c": "glam", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Почему Джеймс Бонд — плохой дипломат", "a": "m", "c": "glam", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Почему ООН не работает", "a": "m", "c": "glam", "e": "m", "s": 3, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Рецепт конфликта", "a": "m", "c": "glam", "e": "m", "s": 2, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Влияние Зендеи на политику через актёрство", "a": "m", "c": "glam", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Непотизм в политике, часть 2", "a": "m", "c": "glam", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Дипломатический протокол на приёмах: наряды", "a": "m", "c": "glam", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Протокол: проколы и ошибки", "a": "m", "c": "glam", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Влиятельные любовницы мировых политиков", "a": "m", "c": "glam", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Свадьба Амбани и политика на ней", "a": "m", "c": "glam", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Ядерное нераспространение глазами женщин", "a": "m", "c": "glam", "e": "h", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Генри Киссинджер — дипломат, которого боялись", "a": "m", "c": "port", "e": "m", "s": 3, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Почему книги Киссинджера так популярны", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Уильям Бёрнс: карьерный дипломат во главе разведки", "a": "m", "c": "port", "e": "m", "s": 1, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Кофи Аннан", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Кеннет Уолтц", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Роберт Кеохейн", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Ганс Моргентау", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Сунь-цзы", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Карл фон Клаузевиц", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Джозеф Най", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Джон Миршаймер", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Джон Мейнард Кейнс", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Stephen M. Walt и теория баланса угроз", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Фигуры из книги Бёрнса: Тафт, Бейкер и другие", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Папская дипломатия и Иоанн Павел II", "a": "m", "c": "port", "e": "h", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Алексей Арбатов", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Сэм Нанн", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Государственные секретари, ставшие президентами США", "a": "m", "c": "port", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Ведьмак × теории МО, часть 1", "a": "m", "c": "pop", "e": "h", "s": 2, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "Ведьмак × теории МО, часть 2", "a": "m", "c": "pop", "e": "h", "s": 2, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "Ведьмак × теории МО, часть 3", "a": "m", "c": "pop", "e": "h", "s": 2, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "Game of Thrones × теории МО, часть 1", "a": "m", "c": "pop", "e": "h", "s": 2, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "Game of Thrones × теории МО, часть 2", "a": "m", "c": "pop", "e": "h", "s": 2, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "Гарри Поттер как политология", "a": "m", "c": "pop", "e": "h", "s": 2, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "«Дюна» и империя: ресурсная политика", "a": "m", "c": "pop", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "Объясняем теорию МО через Гарри Поттера", "a": "m", "c": "pop", "e": "m", "s": 0, "cl": "serial", "pl": ["yt", "ig_m"]}, {"t": "IMRAD: как устроена научная статья", "a": "m", "c": "method", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Литературный обзор: как его делают", "a": "m", "c": "method", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Инструменты исследователя", "a": "m", "c": "method", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Методы: качественные и количественные", "a": "m", "c": "method", "e": "h", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Как проверять источник: кто платит и зачем", "a": "m", "c": "method", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Как отличить аналитику от мнения", "a": "m", "c": "method", "e": "m", "s": 0, "cl": "mech", "pl": ["ig_m", "tg"]}, {"t": "Карьеры международника: нетипичные треки", "a": "m", "c": "career", "e": "m", "s": 1, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Профессиональные треки в МО", "a": "m", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Как попасть в международную организацию", "a": "m", "c": "career", "e": "h", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Что такое JPO и как туда идут", "a": "m", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Стажировки в ООН: как устроен отбор", "a": "m", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "Мотивационное письмо: что решает", "a": "m", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "CV международника: академический и практический", "a": "m", "c": "career", "e": "m", "s": 0, "cl": "cur", "pl": ["ig_m", "tg"]}, {"t": "За столом: Индира Ганди и Симлское соглашение", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: Альва Мюрдаль и женевские переговоры", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: Роуз Готтемёллер и ДСНВ", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: Элейн Уайт Гомес и запрет ядерного оружия", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: Могерини, Шмид и Шерман на переговорах по СВПД", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: Кэтрин Эштон", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: Моника Маквильямс и Белфастское соглашение", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: Мириам Коронель-Феррер и Бангсаморо", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: Лейма Гбови и женское движение Либерии", "a": "m", "c": "wps", "e": "m", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: почему такие соглашения живут дольше", "a": "m", "c": "wps", "e": "h", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: резолюция 1325 и повестка ЖМБ", "a": "m", "c": "wps", "e": "h", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: вебинар к 31 октября", "a": "m", "c": "wps", "e": "h", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "За столом: досье переговорщиц — лид-магнит", "a": "m", "c": "wps", "e": "h", "s": 0, "cl": "salon", "pl": ["ig_m", "tg"]}, {"t": "Верификация: как вообще проверяют договоры", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: ДНЯО и три опоры", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: ДВЗЯИ и ратификационный порог", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: ДСНВ — статус проверить перед публикацией", "a": "m", "c": "arms", "e": "h", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: РСМД и что изменилось в Европе", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: Открытое небо как доверие через проверку", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: КБТО без механизма проверки", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: КХО и ОЗХО как работающая инспекция", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: Договор о торговле оружием", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: Договор о запрещении ядерного оружия", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: Договор о космосе, PAROS, Артемида", "a": "m", "c": "arms", "e": "h", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Верификация: глоссарий — лид-магнит", "a": "m", "c": "arms", "e": "m", "s": 0, "cl": "news", "pl": ["ig_m", "tg"]}, {"t": "Кости брошены: пилотный выпуск", "a": "m", "c": "dice", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Кости: студенческая версия", "a": "m", "c": "dice", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Кости вслепую: гость бросает в эфире", "a": "m", "c": "dice", "e": "h", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Кости на двоих: два эксперта, один набор", "a": "m", "c": "dice", "e": "h", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Утяжелённая кость: что ломает метод", "a": "m", "c": "dice", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Кости: бумажная развёртка — лид-магнит", "a": "m", "c": "dice", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Школа Дипломата, эпизод 3: история дипломатии", "a": "b", "c": "pod", "e": "h", "s": 1, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Школа Дипломата, эпизод 4: НАТО, ЕС и другие", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Школа Дипломата, эпизод 5: кто такие дипломаты", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Школа Дипломата, эпизод 6: введение в геополитику", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Депеша: пилот с дружественным гостем", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Партия: шахматы с экспертом", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Слепая депеша: анонимизированный кейс", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Красная команда: гость защищает чужую позицию", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Три документа: гость приносит первоисточники", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Прогноз в конверте: открытие сезона", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Перевод: разбор одной речи", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Кабинет кризиса: симуляция на 20 минут", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Библиотека: книга, изменившая оптику гостя", "a": "b", "c": "pod", "e": "m", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Двойной агент: две школы, один кейс", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Один стул: 45 минут о карьере", "a": "b", "c": "pod", "e": "h", "s": 0, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Анонс подкаста", "a": "b", "c": "pod", "e": "l", "s": 1, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Рилс по теме подкаста", "a": "b", "c": "pod", "e": "l", "s": 1, "cl": "serial", "pl": ["yt", "tg"]}, {"t": "Гайд по магистратурам МО, 20 страниц", "a": "m", "c": "magnet", "e": "h", "s": 3, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Шаблоны мотивационных писем — переупаковать", "a": "m", "c": "magnet", "e": "m", "s": 2, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Словарь дипломата: 40 терминов", "a": "m", "c": "magnet", "e": "h", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Как читать Foreign Affairs: 6 страниц с разметкой", "a": "m", "c": "magnet", "e": "h", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Пять линз: мини-тренажёр", "a": "m", "c": "magnet", "e": "m", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Карта конфликта: шаблон", "a": "m", "c": "magnet", "e": "m", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Календарь МО-событий на год", "a": "m", "c": "magnet", "e": "m", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Источники, которым можно верить: чек-лист", "a": "m", "c": "magnet", "e": "m", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Пилотный эпизод подкаста как магнит", "a": "m", "c": "magnet", "e": "m", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Досье страны: шаблон one-pager", "a": "m", "c": "magnet", "e": "m", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "CV международника: два шаблона", "a": "m", "c": "magnet", "e": "m", "s": 0, "cl": "cur", "pl": ["tg", "ig_m"]}, {"t": "Прогрев «Брифинга»: рилс про C1 и Foreign Affairs", "a": "b", "c": "prod", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_p", "ig_m", "tg"]}, {"t": "Прогрев: TOEFL по новой шкале", "a": "b", "c": "prod", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_p", "ig_m", "tg"]}, {"t": "Прогрев: слова, которые выдают учебный английский", "a": "b", "c": "prod", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_p", "ig_m", "tg"]}, {"t": "Прогрев: как я читала первую статью в аспирантуре", "a": "p", "c": "prod", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Прогрев: Political English — это другой язык", "a": "m", "c": "prod", "e": "m", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Отзывы и результаты потока", "a": "m", "c": "prod", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Закулисье создания курса", "a": "p", "c": "prod", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_p", "sh"]}, {"t": "Проблемы ООН на современном этапе", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "МАГАТЭ на объектах Украины — клиренс-тест", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Мифы и реальность кибервойны", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Торговля со странами ЮВА", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Безопасность в Европе", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "США и Китай, часть 2", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "США в космосе", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Китай и Литва", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Россия — НАТО — клиренс-тест", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Интеграция Центральной Европы в ЕС", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Амир: F-16", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Амир: F-16, продолжение", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Нейтралитет (Игорь)", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Глобальное потепление (Игорь)", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Восточная Европа и ЕС (Данила)", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Данила: идея 3", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}, {"t": "Либо подкаст, либо игра", "a": "m", "c": "arch", "e": "l", "s": 0, "cl": "serial", "pl": ["ig_m", "tg"]}];
+const CATS = {"story": "истории и путь", "life": "PhD-дневник", "edu": "учёба и языки", "aes": "эстетика и стиль", "meta": "рефлексия и смыслы", "fmt": "формат и интерактив", "expl": "объяснялка", "theory": "теория", "digest": "актуалка и дайджест", "glam": "салонная линия", "port": "персоналии", "cur": "кураторство", "pop": "поп-культура", "method": "методология", "career": "карьера", "space": "космос", "wps": "проект «За столом»", "arms": "проект «Верификация»", "dice": "кости", "pod": "подкаст", "magnet": "лид-магнит", "prod": "прогрев и продукт", "arch": "архив команды"};
+const PLATS = [{"k": "ig_p", "l": "Личный IG", "f": "рилс с личным опытом · сторис · лёгкая карусель · фото-пост"}, {"k": "ig_m", "l": "Мадам IG", "f": "карусель-разбор · рилс-лекция · инфографика · серия постов"}, {"k": "tg", "l": "Telegram", "f": "длинный текст · подборка · дайджест · цитата с комментарием"}, {"k": "yt", "l": "YouTube", "f": "видеоэссе 10–20 мин · влог · эпизод подкаста"}, {"k": "sh", "l": "Shorts / Threads", "f": "нарезка · тизер · текстовая версия рилса"}];
+const CLUSTERS = [{"k": "mech", "l": "🧩 Механизм и теория"}, {"k": "self", "l": "👤 Личное и путь"}, {"k": "news", "l": "📰 Актуалка и кейсы"}, {"k": "cur", "l": "📚 Курация, люди, карьера"}, {"k": "salon", "l": "💎 Эстетика и салон"}, {"k": "serial", "l": "🎲 Формат и серии"}];
+const FORMATS_LIST = ["Reels-лекция","Reels — личное","Карусель-разбор","Карусель","Сторис-серия","Пост в Telegram","Инфографика","Видеоэссе","Эфир / подкаст","Shorts / Threads"];
+const CL_FMT = {mech:"Reels-лекция", self:"Reels — личное", news:"Карусель-разбор", cur:"Карусель", salon:"Карусель", serial:"Reels-лекция"};
+const STATUS = ["идея","в работе","готово","опубликовано"];
+const ACCL = {p:"👤 личный", m:"👑 Мадам", b:"🔀 оба"};
+const W = {l:1,m:2,h:4};
+
+let S = {tp:{}, inbox:[], cells:{}, weeks:2, cap:10, txt:{}};
+try{ const raw = localStorage.getItem('msys2'); if(raw){ S = Object.assign(S, JSON.parse(raw)); } }catch(e){}
+function save(){ try{ localStorage.setItem('msys2', JSON.stringify(S)); }catch(e){} }
+function tp(i){ if(!S.tp[i]) S.tp[i] = {s:TOPICS[i].s, pl:TOPICS[i].pl.slice()}; return S.tp[i]; }
+function clLabel(k){ const c = CLUSTERS.find(x=>x.k===k); return c? c.l : ""; }
+
+/* NAV */
+document.querySelectorAll('aside nav a').forEach(function(link){
+  link.addEventListener('click', function(){
+    document.querySelectorAll('aside nav a').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('section').forEach(x=>x.classList.remove('on'));
+    link.classList.add('on');
+    document.getElementById('s-'+link.dataset.s).classList.add('on');
+    if(link.dataset.s==='cal'){ renderCal(); }
+    if(link.dataset.s==='light'){ renderLight(); }
+    window.scrollTo(0,0);
+  });
+});
+
+/* CAT OPTIONS */
+function catOpts(sel, all){
+  sel.innerHTML = '<option value="">'+all+'</option>' + Object.keys(CATS).map(k=>'<option value="'+k+'">'+CATS[k]+'</option>').join('');
+}
+catOpts(document.getElementById('catF'),'все категории');
+document.getElementById('clF').innerHTML = '<option value="">все кластеры</option>' + CLUSTERS.map(c=>'<option value="'+c.k+'">'+c.l+'</option>').join('');
+const inbC = document.getElementById('inbC');
+inbC.innerHTML = Object.keys(CATS).map(k=>'<option value="'+k+'">'+CATS[k]+'</option>').join('');
+
+/* ===== BANK ===== */
+let fAcc='', fQ='', fCat='', fSt='', fEn='', fCl='';
+let openIdx = null;
+
+function renderList(){
+  const box = document.getElementById('list');
+  let html='', n=0;
+  TOPICS.forEach(function(t,i){
+    const st = tp(i);
+    if(fAcc && t.a!==fAcc) return;
+    if(fCl && t.cl!==fCl) return;
+    if(fCat && t.c!==fCat) return;
+    if(fEn && t.e!==fEn) return;
+    if(fSt!=='' && String(st.s)!==fSt) return;
+    if(fQ && t.t.toLowerCase().indexOf(fQ)<0) return;
+    n++;
+    const chips = PLATS.map(p=>'<span class="chip'+(st.pl.indexOf(p.k)>=0?' on':'')+'" data-i="'+i+'" data-p="'+p.k+'">'+p.l+'</span>').join('');
+    const fm = st.pl.map(k=>{const p=PLATS.find(x=>x.k===k); return '<div><b>'+p.l+':</b> '+p.f+'</div>';}).join('');
+    html += '<div class="row'+(openIdx===i?' open':'')+'" data-i="'+i+'">'
+      + '<div class="rt"><div class="ttl" data-t="'+i+'">'+t.t+'</div>'
+      + '<div class="meta"><span class="acc '+t.a+'">'+ACCL[t.a]+'</span>'
+      + '<span class="badge cl">'+clLabel(t.cl)+'</span>'
+      + '<span class="badge">'+CATS[t.c]+'</span>'
+      + '<span class="dot '+t.e+'" title="энергия"></span>'
+      + '<span class="st s'+st.s+'" data-s="'+i+'">'+STATUS[st.s]+'</span></div></div>'
+      + '<div class="exp"><div class="chips">'+chips+'</div><div class="fmts">'+fm+'</div></div></div>';
+  });
+  box.innerHTML = html || '<p class="muted">Ничего не найдено — попробуйте снять фильтры.</p>';
+  document.getElementById('cnt').textContent = n + ' из ' + TOPICS.length + ' тем · не опубликовано: ' + queue().length + ' · стоит в календаре: ' + planned().size;
+}
+function queue(){ return TOPICS.map((t,i)=>i).filter(i=> tp(i).s<3 ); }
+function planned(){ const s=new Set(); Object.keys(S.cells).forEach(k=>{ const c=S.cells[k]; s.add(typeof c==='object'? c.i : c); }); return s; }
+
+document.getElementById('list').addEventListener('click', function(e){
+  const t = e.target;
+  if(t.classList.contains('ttl')){ const i=+t.dataset.t; openIdx = (openIdx===i? null : i); renderList(); return; }
+  if(t.classList.contains('st')){ const i=+t.dataset.s; const o=tp(i); o.s=(o.s+1)%4; save(); renderList(); return; }
+  if(t.classList.contains('chip')){
+    const i=+t.dataset.i, p=t.dataset.p, o=tp(i);
+    const k=o.pl.indexOf(p); if(k>=0){o.pl.splice(k,1);}else{o.pl.push(p);}
+    save(); renderList(); return;
+  }
+});
+document.getElementById('q').addEventListener('input', e=>{fQ=e.target.value.toLowerCase(); renderList();});
+document.getElementById('catF').addEventListener('change', e=>{fCat=e.target.value; renderList();});
+document.getElementById('clF').addEventListener('change', e=>{fCl=e.target.value; renderList();});
+document.getElementById('stF').addEventListener('change', e=>{fSt=e.target.value; renderList();});
+document.getElementById('enF').addEventListener('change', e=>{fEn=e.target.value; renderList();});
+document.querySelectorAll('#accSeg button').forEach(b=>b.addEventListener('click',function(){
+  document.querySelectorAll('#accSeg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); fAcc=b.dataset.a; renderList();
+}));
+
+/* ===== INBOX ===== */
+function renderInbox(){
+  const box = document.getElementById('inbList');
+  if(!S.inbox.length){ box.innerHTML='<p class="muted">Пусто. Это хорошо — значит, всё разобрано.</p>'; }
+  else {
+    box.innerHTML = S.inbox.map(function(it,k){
+      return '<div class="inbox-row"><span class="acc '+it.a+'">'+ACCL[it.a]+'</span>'
+        +'<span class="badge">'+CATS[it.c]+'</span>'
+        +'<span class="t">'+it.t+'</span>'
+        +'<button class="btn sm ghost" data-mv="'+k+'">в банк</button>'
+        +'<button class="btn sm ghost" data-del="'+k+'">×</button></div>';
+    }).join('');
+  }
+  document.getElementById('inbCount').textContent = S.inbox.length + ' необработанных идей';
+}
+document.getElementById('inbAdd').addEventListener('click', function(){
+  const v = document.getElementById('inbT').value.trim(); if(!v) return;
+  S.inbox.unshift({t:v, a:document.getElementById('inbA').value, c:inbC.value});
+  document.getElementById('inbT').value=''; save(); renderInbox();
+});
+document.getElementById('inbT').addEventListener('keydown', e=>{ if(e.key==='Enter'){ document.getElementById('inbAdd').click(); }});
+document.getElementById('inbList').addEventListener('click', function(e){
+  if(e.target.dataset.del!==undefined){ S.inbox.splice(+e.target.dataset.del,1); save(); renderInbox(); }
+  if(e.target.dataset.mv!==undefined){
+    const k=+e.target.dataset.mv, it=S.inbox[k];
+    TOPICS.push({t:it.t, a:it.a, c:it.c, e:'m', s:0});
+    S.inbox.splice(k,1); save(); renderInbox(); renderList();
+    alert('Идея добавлена в банк тем. Не забудьте выгрузить резервную копию во вкладке «Данные» — новые темы живут в этом браузере.');
+  }
+});
+
+/* ===== CALENDAR ===== */
+let picker = null;
+function cellObj(key){
+  const c = S.cells[key];
+  if(c===undefined) return null;
+  if(typeof c === 'object') return c;
+  return {i:c, f:CL_FMT[TOPICS[c].cl]||'Reels-лекция', p:(tp(c).pl[0]||'ig_m')};
+}
+function plLabel(k){ const p=PLATS.find(x=>x.k===k); return p? p.l : k; }
+
+function renderCal(){
+  const done = planned();
+  const q = queue().filter(i=>!done.has(i));
+  document.getElementById('queue').innerHTML =
+    '<p class="muted" style="margin:0 0 8px;">Свободных тем: '+q.length+'. В каждой строке календаря предлагаются темы её кластера — плюс в клетке открывает выбор.</p>'
+    + CLUSTERS.map(function(c){
+        const n = q.filter(i=>TOPICS[i].cl===c.k).length;
+        return '<span class="badge" style="margin:0 6px 6px 0;display:inline-block;">'+c.l+' · '+n+'</span>';
+      }).join('');
+  let html='';
+  for(let w=0; w<S.weeks; w++){
+    let load = 0;
+    Object.keys(S.cells).forEach(function(key){ if(key.indexOf(w+'-')===0){ const o=cellObj(key); if(o) load += W[TOPICS[o.i].e]; } });
+    let head='<tr><th style="width:132px"></th>'; for(let d=1; d<=5; d++){ head+='<th>День '+d+'</th>'; } head+='</tr>';
+    let rows='';
+    CLUSTERS.forEach(function(cl,ri){
+      rows+='<tr><td class="rub">'+cl.l+'</td>';
+      for(let d=0; d<5; d++){
+        const key=w+'-'+d+'-'+ri;
+        const o = cellObj(key);
+        if(o){
+          const t=TOPICS[o.i];
+          rows+='<td><div class="cell"><button class="x" data-clr="'+key+'">×</button>'
+            +'<div class="ct">'+t.t+'</div>'
+            +'<select class="mini" data-f="'+key+'">'+FORMATS_LIST.map(f=>'<option'+(f===o.f?' selected':'')+'>'+f+'</option>').join('')+'</select>'
+            +'<select class="mini" data-pl="'+key+'">'+tp(o.i).pl.map(k=>'<option value="'+k+'"'+(k===o.p?' selected':'')+'>'+plLabel(k)+'</option>').join('')
+            + PLATS.filter(x=>tp(o.i).pl.indexOf(x.k)<0).map(x=>'<option value="'+x.k+'"'+(x.k===o.p?' selected':'')+'>'+x.l+'</option>').join('')
+            +'</select>'
+            +'<span class="dot '+t.e+'"></span></div></td>';
+        } else if(picker===key){
+          const opts = q.filter(i=>TOPICS[i].cl===cl.k);
+          const rest = q.filter(i=>TOPICS[i].cl!==cl.k);
+          rows+='<td><div class="cell"><select data-pick="'+key+'"><option value="">выбрать тему…</option>'
+            + '<optgroup label="'+cl.l+'">' + opts.map(i=>'<option value="'+i+'">'+TOPICS[i].t+'</option>').join('') + '</optgroup>'
+            + '<optgroup label="другие кластеры">' + rest.map(i=>'<option value="'+i+'">'+TOPICS[i].t+'</option>').join('') + '</optgroup>'
+            + '</select></div></td>';
+        } else {
+          rows+='<td><button class="plus" data-add="'+key+'">+</button></td>';
+        }
+      }
+      rows+='</tr>';
+    });
+    html+='<div class="week"><div class="wt"><span>Неделя '+(w+1)+'</span><span>вес недели: '+load+'</span></div><table class="cal">'+head+rows+'</table></div>';
+  }
+  document.getElementById('weeks').innerHTML = html;
+}
+document.getElementById('weeks').addEventListener('click', function(e){
+  if(e.target.dataset.add){ picker=e.target.dataset.add; renderCal(); }
+  if(e.target.dataset.clr){ delete S.cells[e.target.dataset.clr]; save(); renderCal(); renderList(); }
+});
+document.getElementById('weeks').addEventListener('change', function(e){
+  const t=e.target;
+  if(t.dataset.pick && t.value!==''){
+    const i=+t.value;
+    S.cells[t.dataset.pick]={i:i, f:CL_FMT[TOPICS[i].cl]||'Reels-лекция', p:(tp(i).pl[0]||'ig_m')};
+    picker=null; save(); renderCal(); renderList(); return;
+  }
+  if(t.dataset.f){ const o=cellObj(t.dataset.f); o.f=t.value; S.cells[t.dataset.f]=o; save(); return; }
+  if(t.dataset.pl){ const o=cellObj(t.dataset.pl); o.p=t.value; S.cells[t.dataset.pl]=o; save(); return; }
+});
+document.getElementById('addW').addEventListener('click', function(){ S.weeks++; save(); renderCal(); });
+
+/* ===== TRAFFIC LIGHT ===== */
+function renderLight(){
+  let html='';
+  for(let w=0; w<S.weeks; w++){
+    let load=0, cnt={l:0,m:0,h:0};
+    Object.keys(S.cells).forEach(function(key){
+      if(key.indexOf(w+'-')===0){ const o=cellObj(key); if(o){ const e=TOPICS[o.i].e; load+=W[e]; cnt[e]++; } }
+    });
+    const cap=S.cap;
+    let col, txt;
+    if(load<=cap*0.6){ col='var(--green)'; txt='есть запас'; }
+    else if(load<=cap){ col='var(--amber)'; txt='плотно, но реально'; }
+    else { col='var(--red)'; txt='перегруз — нужен батч или перенос'; }
+    html+='<div class="light"><div class="lamp" style="background:'+col+'"></div>'
+      +'<h4>Неделя '+(w+1)+'</h4><span>вес '+load+' из '+cap+' · '+txt+'</span>'
+      +'<div class="bars">'
+      +'<div class="barrow"><span class="lbl">лёгкие</span><div class="track"><div class="fill" style="width:'+Math.min(100,cnt.l*20)+'%;background:var(--green)"></div></div><span>'+cnt.l+'</span></div>'
+      +'<div class="barrow"><span class="lbl">средние</span><div class="track"><div class="fill" style="width:'+Math.min(100,cnt.m*25)+'%;background:var(--amber)"></div></div><span>'+cnt.m+'</span></div>'
+      +'<div class="barrow"><span class="lbl">тяжёлые</span><div class="track"><div class="fill" style="width:'+Math.min(100,cnt.h*50)+'%;background:var(--red)"></div></div><span>'+cnt.h+'</span></div>'
+      +'</div></div>';
+  }
+  document.getElementById('lights').innerHTML = html;
+}
+document.querySelectorAll('#capSeg button').forEach(b=>b.addEventListener('click',function(){
+  document.querySelectorAll('#capSeg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); S.cap=+b.dataset.c; save(); renderLight();
+}));
+
+/* ===== EDITABLE CELLS ===== */
+document.querySelectorAll('[data-pk],[data-mk]').forEach(function(el){
+  const key = el.dataset.pk || el.dataset.mk;
+  if(S.txt[key]) el.textContent = S.txt[key];
+  el.addEventListener('input', function(){ S.txt[key]=el.textContent; save(); });
+});
+
+/* ===== HOOKS COPY ===== */
+document.querySelectorAll('.hook').forEach(function(li){
+  li.addEventListener('click', function(){
+    const txt = li.dataset.h;
+    if(navigator.clipboard){ navigator.clipboard.writeText(txt); }
+    li.classList.add('copied');
+    setTimeout(()=>li.classList.remove('copied'), 1200);
+  });
+});
+
+/* ===== DICE (D&D) ===== */
+const SCHOOLS = [
+ {n:"Реализм — воин", str:3, dex:0, con:2, int:1, wis:0, cha:-1, weak:"нормы и идентичности"},
+ {n:"Либерализм — бард", str:-1, dex:1, con:0, int:2, wis:0, cha:3, weak:"голая сила вопреки институтам"},
+ {n:"Конструктивизм — волшебник", str:-1, dex:1, con:0, int:1, wis:3, cha:2, weak:"материальные ограничения"},
+ {n:"Критическая теория — плут", str:0, dex:2, con:-1, int:1, wis:3, cha:0, weak:"прогноз конкретных решений"},
+ {n:"Политэкономия — следопыт", str:2, dex:0, con:1, int:3, wis:1, cha:-1, weak:"символическая политика и престиж"},
+ {n:"Копенгагенская школа — жрец", str:0, dex:0, con:1, int:1, wis:2, cha:3, weak:"рутинная политика вне режима угрозы"}
+];
+const ABIL = [["str","💪 Сила"],["dex","🤸 Ловкость"],["con","🛡️ Телосложение"],["int","🧠 Интеллект"],["wis","👁️ Мудрость"],["cha","🗣️ Харизма"]];
+const D6 = {
+ reg:["Залив","Сахель","Балтика","Южно-Китайское море","Арктика","Южный Кавказ"],
+ act:["великая держава","средняя держава","малое государство","межправительственная организация","негосударственный актор","корпорация"],
+ ins:["санкции","сила","переговоры","нормы и право","нарратив","технология"]
+};
+const D4H = ["неделя","год","десятилетие","поколение"];
+const CHECK = {reg:"con", act:"str", ins:"cha", hor:"wis"};
+function d(n){ return 1 + Math.floor(Math.random()*n); }
+function mod(v){ return (v>=0? "+" : "") + v; }
+
+const dClass = document.getElementById('dClass');
+dClass.innerHTML = SCHOOLS.map((s,i)=>'<option value="'+i+'">'+s.n+'</option>').join('');
+
+document.getElementById('roll').addEventListener('click', function(){
+  const sc = SCHOOLS[+dClass.value];
+  const adv = +document.getElementById('dAdv').value;
+  const reg = D6.reg[d(6)-1], act = D6.act[d(6)-1], ins = D6.ins[d(6)-1], hor = D4H[d(4)-1];
+  const dc = 8 + d(6) + d(6);
+
+  let r1 = d(20), r2 = d(20), raw = r1, note = "";
+  if(adv === 1){ raw = Math.max(r1,r2); note = " (преимущество: "+r1+" и "+r2+")"; }
+  if(adv === -1){ raw = Math.min(r1,r2); note = " (помеха: "+r1+" и "+r2+")"; }
+
+  const key = CHECK.ins;
+  const m = sc[key];
+  const total = raw + m;
+
+  let verdict, col;
+  if(raw === 20){ verdict = "Критический успех — теория объясняет всё, включая деталь, которую без неё не видно. Этот выпуск в закреп."; col = "var(--green)"; }
+  else if(raw === 1){ verdict = "Критический провал — школа ломается на живом материале. Самый интересный разбор рубрики: показываем, где именно она перестаёт работать."; col = "var(--red)"; }
+  else if(total >= dc){ verdict = "Успех — школа объясняет кейс. Разбор строится по её логике, в финале называем цену этой оптики."; col = "var(--green)"; }
+  else if(total >= dc - 4){ verdict = "Частичный успех — объясняет половину. Вторая половина требует другой школы, и это тоже вывод."; col = "var(--amber)"; }
+  else { verdict = "Провал — вводная не по зубам этой оптике. Честно говорим об этом и показываем, чья территория."; col = "var(--red)"; }
+
+  const abil = ABIL.map(function(a){
+    const roll = d(20), tot = roll + sc[a[0]];
+    return '<div class="barrow"><span class="lbl">'+a[1]+'</span><div class="track"><div class="fill" style="width:'+Math.min(100, tot*4)+'%;background:'+(tot>=14?'var(--green)':tot>=9?'var(--amber)':'var(--red)')+'"></div></div><span>'+roll+mod(sc[a[0]])+' = '+tot+'</span></div>';
+  }).join('');
+
+  const sav = d(20) + sc.wis;
+
+  document.getElementById('rollOut').innerHTML =
+    '<div class="card" style="margin-top:14px;">'
+    + '<h4>'+sc.n+'</h4>'
+    + '<p style="margin-bottom:12px;"><b>Вводная:</b> '+reg+' · '+act+' · '+ins+' · горизонт: '+hor+'</p>'
+    + '<div class="barrow"><span class="lbl">проверка</span><div class="track"><div class="fill" style="width:'+Math.min(100,total*4)+'%;background:'+col+'"></div></div><span>d20 = '+raw+mod(m)+' = <b>'+total+'</b> против сложности '+dc+note+'</span></div>'
+    + '<div class="note" style="border-left-color:'+col+';">'+verdict+'</div>'
+    + '<div class="bars" style="margin-top:12px;">'+abil+'</div>'
+    + '<p style="margin-top:12px;font-size:12.5px;color:var(--soft);"><b>Спасбросок</b> (меняем одну вводную, устоит ли вывод): '+sav+' — '+(sav>=13? 'устоял, объяснение не держалось на случайности' : 'провален, вывод был завязан на конкретную вводную — это стоит проговорить вслух')+'.</p>'
+    + '<p style="margin-top:8px;font-size:12.5px;color:var(--gold);">Слабое место класса: '+sc.weak+'. Если вводная попала именно туда — не подгоняйте, покажите границу.</p>'
+    + '</div>';
+});
+
+/* ===== DATA ===== */
+document.getElementById('expBtn').addEventListener('click', function(){
+  const blob = new Blob([JSON.stringify({state:S, extraTopics:TOPICS.slice(359)}, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'контент-система-копия.json';
+  a.click();
+});
+document.getElementById('impBtn').addEventListener('click', ()=>document.getElementById('impFile').click());
+document.getElementById('impFile').addEventListener('change', function(e){
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = function(){
+    try{
+      const d = JSON.parse(r.result);
+      if(d.state){ S = d.state; }
+      if(d.extraTopics){ d.extraTopics.forEach(t=>TOPICS.push(t)); }
+      save(); renderList(); renderInbox(); renderCal(); renderLight();
+      alert('Копия загружена.');
+    }catch(err){ alert('Не получилось прочитать файл.'); }
+  };
+  r.readAsText(f);
+});
+document.getElementById('clrBtn').addEventListener('click', function(){
+  if(confirm('Сбросить все отметки, инбокс и календарь? Отменить будет нельзя.')){
+    try{ localStorage.removeItem('msys2'); }catch(e){}
+    location.reload();
+  }
+});
+
+renderList(); renderInbox(); renderCal(); renderLight();
+})();
+</script>
+</body>
+</html>
