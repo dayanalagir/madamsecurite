@@ -1,0 +1,811 @@
+<title>Дайджест Madam Securité</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
+<style>
+/* Layout: briefing desk — profile shelf on top, controls column on the left, the digest as a dossier sheet on the right, registry table below. */
+:root{
+  --bg:#E9EDF1; --paper:#FFFFFF; --sunk:#F3F5F8; --ink:#142030; --muted:#566578; --line:#D3DAE2;
+  --accent:#1D4ED8; --accent-soft:#E2E9FB; --amber:#B4660F; --amber-soft:#FBEEDC;
+  --ok:#1E7A4B; --ok-soft:#DFF2E7; --bad:#B42318; --bad-soft:#FBE4E1; --warn:#8A5A00; --warn-soft:#FFF1CC;
+  --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D131A; --paper:#141C26; --sunk:#101720; --ink:#E3E9F0; --muted:#93A1B2; --line:#26313E;
+  --accent:#86A7FF; --accent-soft:#1C2A4A; --amber:#EBA552; --amber-soft:#3A2A14;
+  --ok:#5CCB8E; --ok-soft:#15301F; --bad:#FF8A7D; --bad-soft:#3A1A17; --warn:#F2C25C; --warn-soft:#352A10; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D131A; --paper:#141C26; --sunk:#101720; --ink:#E3E9F0; --muted:#93A1B2; --line:#26313E;
+  --accent:#86A7FF; --accent-soft:#1C2A4A; --amber:#EBA552; --amber-soft:#3A2A14;
+  --ok:#5CCB8E; --ok-soft:#15301F; --bad:#FF8A7D; --bad-soft:#3A1A17; --warn:#F2C25C; --warn-soft:#352A10; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+a{color:var(--accent)}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px;display:grid;gap:40px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:end;justify-content:space-between}
+.brand{display:flex;gap:14px;align-items:center}
+.seal{width:52px;height:52px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:600;font-size:15px;letter-spacing:.02em;position:relative}
+.seal::after{content:"";position:absolute;inset:4px;border-radius:50%;border:1px dashed var(--muted)}
+.brand h1{font-family:var(--f-display);font-weight:600;font-size:clamp(22px,3.4vw,32px);line-height:1.1}
+.brand p{margin:4px 0 0;color:var(--muted)}
+.topmeta{display:flex;gap:18px;flex-wrap:wrap}
+.topmeta div{display:grid}
+.topmeta b{font-family:var(--f-mono);font-size:20px;font-weight:500}
+
+/* sections */
+.sec-head{display:grid;gap:6px;margin-bottom:16px;max-width:72ch}
+.sec-head h2{font-family:var(--f-display);font-weight:500;font-size:21px}
+.sec-head p{margin:0;color:var(--muted)}
+
+/* profiles */
+.profiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.pcard{all:unset;box-sizing:border-box;cursor:pointer;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 14px 12px;display:grid;gap:6px;align-content:start;min-height:122px}
+.pcard:hover{border-color:var(--muted)}
+.pcard:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pcard[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.pcard .eyebrow{color:var(--accent)}
+.pcard strong{font-size:15.5px;font-weight:600;line-height:1.3}
+.pcard .stage{font-size:12.5px;color:var(--muted)}
+.pcard .desc{font-size:13px;color:var(--muted)}
+.pcard.new{border-style:dashed;background:transparent}
+.pcard .del{justify-self:start;font-size:12px;color:var(--bad);background:none;border:0;padding:0;text-decoration:underline}
+.pnotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px 24px;margin-top:14px;font-size:13.5px;color:var(--muted)}
+.pnotes b{color:var(--ink);font-weight:600;display:block}
+
+/* desk */
+.desk{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:920px){.desk{grid-template-columns:minmax(0,1fr)}}
+.controls{display:grid;gap:14px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px}
+.panel h3{font-size:14px;font-weight:600}
+.panel .hint{font-size:12.5px;color:var(--muted);margin:-6px 0 0}
+.addrow{display:flex;gap:6px}
+.addrow input{flex:1;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:var(--sunk)}
+.btn{padding:7px 12px;border:1px solid var(--line);border-radius:7px;background:var(--sunk);font-size:13.5px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--paper);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.kw{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;background:var(--sunk);font-size:13px;overflow:hidden}
+.kw span{padding:3px 4px 3px 10px}
+.kw .w{border:0;border-left:1px solid var(--line);background:transparent;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;padding:4px 7px}
+.kw .w[data-w="3"]{background:var(--accent);color:var(--paper)}
+.kw .w[data-w="2"]{background:var(--accent-soft);color:var(--accent)}
+.kw .x{border:0;background:transparent;padding:3px 9px 3px 5px;color:var(--muted)}
+.sugg{border:1px dashed var(--line);background:transparent;border-radius:999px;font-size:12.5px;padding:3px 10px;color:var(--muted)}
+.sugg:hover{color:var(--ink);border-color:var(--muted)}
+.field{display:grid;gap:5px;font-size:13.5px}
+.field .row{display:flex;justify-content:space-between;gap:8px}
+.field output{font-family:var(--f-mono);font-size:12.5px;color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select{padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--sunk)}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:13.5px}
+.check input{margin-top:3px;accent-color:var(--accent)}
+.kinds{display:flex;flex-wrap:wrap;gap:6px 14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stats{display:grid;gap:4px;font-size:13px;margin:0}
+.stats div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dotted var(--line);padding-block:3px}
+.stats dt{color:var(--muted)}
+.stats dd{margin:0;font-family:var(--f-mono)}
+.stats .sent dd{color:var(--accent);font-weight:500}
+.shortlist{display:grid;gap:6px;font-size:13.5px}
+.shortlist .si{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.shortlist .si a{min-width:0}
+.empty{color:var(--muted);font-size:13.5px;margin:0}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+.textout{width:100%;min-height:110px;font-family:var(--f-mono);font-size:11.5px;padding:8px;border:1px solid var(--line);border-radius:7px;background:var(--sunk)}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+.toast{font-size:12.5px;color:var(--ok);min-height:1em;margin:0}
+
+/* digest sheet */
+.main{display:grid;gap:18px;min-width:0}
+.runway{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px}
+.runway .head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;align-items:baseline}
+.track{position:relative;height:auto;display:grid;gap:6px}
+.rw{display:grid;grid-template-columns:minmax(0,1fr) 54px;gap:10px;align-items:center;font-size:13px}
+.rw .bar{position:relative;height:22px;background:var(--sunk);border-radius:4px;overflow:hidden}
+.rw .fill{position:absolute;inset:0 auto 0 0;background:var(--amber-soft);border-right:2px solid var(--amber)}
+.rw .lbl{position:absolute;inset:0 8px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rw .d{font-family:var(--f-mono);text-align:right;color:var(--amber)}
+.axis{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10.5px;color:var(--muted);padding-right:64px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;font-size:13.5px}
+.toolbar .subj{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);min-width:0}
+.sheet{background:var(--paper);border:1px solid var(--line);border-radius:4px;box-shadow:0 1px 0 var(--line),0 12px 32px -18px rgba(20,32,48,.35);overflow:hidden}
+.sheet-head{padding:22px 24px 18px;border-bottom:2px solid var(--ink);display:grid;gap:6px;position:relative}
+.stamp{position:absolute;top:18px;right:20px;font-family:var(--f-display);font-size:11px;letter-spacing:.14em;color:var(--bad);border:2px solid var(--bad);padding:4px 8px;transform:rotate(4deg);opacity:.8}
+.sheet-head h2{font-family:var(--f-display);font-weight:600;font-size:22px;padding-right:110px}
+.sheet-head .meta{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.block{padding:18px 24px;border-bottom:1px solid var(--line);display:grid;gap:4px}
+.block:last-child{border-bottom:0}
+.block-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.block-head h3{font-family:var(--f-display);font-weight:500;font-size:16px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;padding-block:12px;border-top:1px dashed var(--line)}
+.item:first-of-type{border-top:0}
+.item .kicker{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.item h4{margin:0;font-size:15.5px;font-weight:600;line-height:1.35}
+.item h4 a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+.item h4 a:hover{border-color:var(--accent);color:var(--accent)}
+.item p{margin:0;font-size:14px;color:var(--muted);max-width:68ch}
+.item .side{display:grid;justify-items:end;align-content:start;gap:6px;grid-row:span 3}
+.score{font-family:var(--f-mono);font-size:18px;font-weight:500;color:var(--accent)}
+.meter{width:56px;height:4px;background:var(--sunk);border-radius:2px;position:relative}
+.meter i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:2px}
+.meter b{position:absolute;top:-3px;width:2px;height:10px;background:var(--amber)}
+.star{border:1px solid var(--line);background:transparent;border-radius:6px;width:30px;height:28px;font-size:15px;color:var(--muted);line-height:1}
+.star[aria-pressed="true"]{color:var(--amber);border-color:var(--amber);background:var(--amber-soft)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.tag{font-size:11.5px;padding:1px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:2px 8px;border-radius:999px;font-weight:500;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.no{background:var(--bad-soft);color:var(--bad)}
+.pill.chk{background:var(--warn-soft);color:var(--warn)}
+.pill.due{background:var(--amber-soft);color:var(--amber)}
+.pill.plain{background:var(--sunk);color:var(--muted)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.searchlink{font-size:11.5px;color:var(--muted)}
+.filtered{font-size:13.5px}
+.filtered summary{cursor:pointer;color:var(--accent)}
+.filtered ul{margin:10px 0 0;padding-left:18px;display:grid;gap:3px;color:var(--muted)}
+.filtered b{color:var(--ink);font-weight:500}
+
+/* registry */
+.reg-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:3px}
+.tabs button{border:0;background:transparent;padding:5px 11px;border-radius:6px;font-size:13.5px;color:var(--muted)}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.reg-tools input{padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:var(--paper);min-width:0;width:260px;max-width:100%}
+.tablewrap{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:820px;font-size:13.5px}
+th{text-align:left;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--sunk)}
+td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td .nm{font-weight:600}
+td .nm a{color:var(--ink)}
+td .org{font-size:12.5px;color:var(--muted)}
+td .sm{font-size:13px;color:var(--muted);margin-top:3px;max-width:60ch}
+td .dt{font-family:var(--f-mono);font-size:12.5px;white-space:nowrap}
+td .dd{font-size:12px;color:var(--muted)}
+.reg-foot{font-size:13px;color:var(--muted);margin-top:10px}
+
+/* method */
+.method{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px 28px}
+.method h3{font-size:14.5px;font-weight:600;margin-bottom:4px}
+.method p{margin:0;font-size:13.5px;color:var(--muted);max-width:62ch}
+@media (max-width:520px){
+  .sheet-head,.block{padding-left:16px;padding-right:16px}
+  .stamp{display:none}.sheet-head h2{padding-right:0}
+  .grid2{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:no-preference){.pcard,.btn,.star{transition:border-color .15s,background .15s}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="seal" aria-hidden="true">MS</div>
+      <div>
+        <h1>Дайджест Madam Securité</h1>
+        <p>Работы, стипендии, фелловшипы и стажировки по международной безопасности, дипломатии и космическому праву, отсортированные под ваш профиль.</p>
+      </div>
+    </div>
+    <div class="topmeta">
+      <div><span class="eyebrow">в базе</span><b id="tm-total">0</b></div>
+      <div><span class="eyebrow">открыто сейчас</span><b id="tm-open">0</b></div>
+      <div><span class="eyebrow">сегодня</span><b id="tm-today">—</b></div>
+    </div>
+  </header>
+
+  <section aria-labelledby="h-prof">
+    <div class="sec-head">
+      <span class="eyebrow">Шаг 1 · профиль</span>
+      <h2 id="h-prof">Выберите стартовый профиль и настройте под себя</h2>
+      <p>Восемь профилей: международная безопасность, космическая безопасность, дипломатия, контроль над вооружениями и лунное управление. Укажите этап обучения и гражданство, поменяйте ключевые слова, и дайджест пересчитается.</p>
+    </div>
+    <div class="profiles" id="profiles"></div>
+    <div class="pnotes" id="pnotes"></div>
+  </section>
+
+  <section aria-labelledby="h-desk">
+    <div class="sec-head">
+      <span class="eyebrow">Шаг 2 · настройка и чтение</span>
+      <h2 id="h-desk">Ключевые слова, фильтры и сам дайджест</h2>
+    </div>
+    <div class="desk">
+      <aside class="controls">
+        <div class="panel">
+          <h3>Ключевые слова для работ</h3>
+          <p class="hint">Нажмите на вес, чтобы переключить НИЗ · СР · ВЫС.</p>
+          <form class="addrow" id="r-add"><input id="r-add-in" placeholder="Слово или фраза, например ASAT" aria-label="Добавить ключевое слово для работ"><button class="btn" type="submit">Добавить</button></form>
+          <div class="chips" id="r-kws"></div>
+          <div class="chips" id="r-sugg"></div>
+          <div class="field"><div class="row"><label for="r-bar">Порог совпадения</label><output id="r-bar-o"></output></div><input type="range" id="r-bar" min="0" max="80" step="5"></div>
+          <div class="grid2">
+            <div class="field"><label for="r-age">Не старше</label><select id="r-age"><option value="any">Любой давности</option><option value="1">1 год</option><option value="2">2 года</option><option value="5">5 лет</option></select></div>
+            <div class="field"><label for="r-max">Максимум работ</label><select id="r-max"><option>5</option><option>10</option><option>15</option><option>25</option></select></div>
+          </div>
+          <label class="check"><input type="checkbox" id="r-undated"> Включать материалы без даты (ежегодные доклады, журналы)</label>
+        </div>
+
+        <div class="panel">
+          <h3>Ключевые слова для возможностей</h3>
+          <p class="hint">Считаются отдельно: в объявлениях о стипендиях редко пишут научными терминами.</p>
+          <form class="addrow" id="o-add"><input id="o-add-in" placeholder="Например, internship" aria-label="Добавить ключевое слово для возможностей"><button class="btn" type="submit">Добавить</button></form>
+          <div class="chips" id="o-kws"></div>
+          <div class="chips" id="o-sugg"></div>
+          <div class="field"><div class="row"><label for="o-bar">Порог совпадения</label><output id="o-bar-o"></output></div><input type="range" id="o-bar" min="0" max="80" step="5"></div>
+          <div class="field"><span>Включать</span><div class="kinds" id="kinds"></div></div>
+          <div class="field"><label for="o-skip">Пропускать, если до дедлайна меньше</label><select id="o-skip"><option value="0">Не пропускать</option><option value="7">7 дней</option><option value="14">14 дней</option><option value="30">30 дней</option></select></div>
+          <label class="check"><input type="checkbox" id="o-past"> Скрывать прошедшие дедлайны</label>
+          <label class="check"><input type="checkbox" id="o-inel"> Скрывать то, куда этот профиль, скорее всего, не может подать (этап или гражданство)</label>
+          <div class="grid2">
+            <div class="field"><label for="stage">Этап</label><select id="stage"><option value="">Не указан</option><option value="ug">Бакалавриат</option><option value="grad">Магистратура</option><option value="phd">Аспирантура / PhD</option><option value="early">Молодой специалист / постдок</option></select></div>
+            <div class="field"><label for="cit">Гражданство</label><select id="cit"><option value="">Не указано</option><option value="ru">Россия</option><option value="eu">Страна ЕС</option><option value="us">США</option><option value="uspr">ПМЖ США</option><option value="other">Другое</option></select></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Этот прогон</h3>
+          <dl class="stats" id="stats"></dl>
+        </div>
+
+        <div class="panel">
+          <h3>Избранное</h3>
+          <p class="hint">Отмечайте звёздочкой что угодно в дайджесте. Хранится в этом браузере.</p>
+          <div class="shortlist" id="shortlist"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Забрать с собой</h3>
+          <p class="hint">Таблица всех программ, куда этот профиль может подать, плюс список чтения. Дедлайны можно по одному добавить в Google Календарь или скопировать как файл .ics с напоминанием за неделю.</p>
+          <div class="field"><label for="who">Имя для таблицы</label><input id="who" class="textout" style="min-height:0;font-family:var(--f-body);font-size:14px" placeholder="Например, Даяна"></div>
+          <div class="btnrow">
+            <button class="btn primary" id="dl-csv" type="button">Скачать таблицу (.csv)</button>
+            <button class="btn" id="cp-ics" type="button">Скопировать .ics</button>
+          </div>
+          <p class="toast" id="exp-toast" role="status"></p>
+          <textarea class="textout" id="exp-out" hidden aria-label="Текст для копирования"></textarea>
+        </div>
+
+        <div class="panel">
+          <h3>Настройки профиля</h3>
+          <p class="hint">Сохраните текущие настройки как свой профиль или перенесите их на другое устройство.</p>
+          <div class="btnrow">
+            <button class="btn" id="cp-set" type="button">Скопировать настройки</button>
+            <button class="btn" id="imp-toggle" type="button">Вставить настройки</button>
+          </div>
+          <div id="imp-box" hidden style="display:grid;gap:8px">
+            <textarea class="textout" id="imp-in" placeholder="Вставьте сюда скопированные настройки"></textarea>
+            <button class="btn" id="imp-go" type="button">Применить</button>
+          </div>
+          <p class="toast" id="set-toast" role="status"></p>
+        </div>
+      </aside>
+
+      <div class="main">
+        <div class="runway">
+          <div class="head"><h3 style="font-size:14px;font-weight:600">Полоса дедлайнов</h3><span class="eyebrow" id="rw-meta"></span></div>
+          <div class="track" id="runway"></div>
+          <div class="axis"><span>сегодня</span><span>30 д</span><span>60 д</span><span>90 д</span><span>120 д</span></div>
+        </div>
+        <div class="toolbar">
+          <span class="subj" id="subject"></span>
+          <label>Сортировать возможности <select id="sort"><option value="match">по совпадению</option><option value="deadline">по дедлайну</option></select></label>
+        </div>
+        <article class="sheet" id="sheet"></article>
+        <details class="filtered" id="filtered"><summary>Показать, что отфильтровано и почему</summary><ul id="filtered-list"></ul></details>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-reg">
+    <div class="sec-head">
+      <span class="eyebrow">Шаг 3 · лист наблюдения</span>
+      <h2 id="h-reg">Программы, за которыми вы следите</h2>
+      <p>Каждая программа проверяется по этапу и гражданству выбранного профиля. Всё, что открыто или скоро откроется, попадает в начало дайджеста независимо от совпадения ключевых слов.</p>
+    </div>
+    <div class="reg-tools">
+      <div class="tabs" id="tabs"></div>
+      <input id="reg-q" type="search" placeholder="Поиск по листу" aria-label="Поиск по листу наблюдения">
+    </div>
+    <div class="tablewrap"><table><thead><tr><th>Программа</th><th>Ближайшая дата</th><th>Совпадения</th><th id="th-fit">Подходит</th><th>★</th></tr></thead><tbody id="reg"></tbody></table></div>
+    <p class="reg-foot" id="reg-foot"></p>
+  </section>
+
+  <section aria-labelledby="h-method">
+    <div class="sec-head">
+      <span class="eyebrow">Откуда данные</span>
+      <h2 id="h-method">Источники, даты и как считается совпадение</h2>
+    </div>
+    <div class="method">
+      <div><h3>Откуда материалы</h3><p>Работы и программы с точными датами взяты из подборки исходного дайджеста (даты сверены там 29 октября 2026). Программы по дипломатии и международным организациям добавлены отдельно и помечены «обычно…»: у них нет проверенной даты, только типичный цикл. Если точной страницы нет, ссылка ведёт на поиск и помечена «поиск».</p></div>
+      <div><h3>Даты и дедлайны</h3><p>Дни до дедлайна считаются от сегодняшней даты на вашем устройстве. Сроки меняются, поэтому перед подачей всегда проверяйте официальную страницу.</p></div>
+      <div><h3>Право на участие</h3><p>У каждой возможности отмечены допустимые этапы и правило по гражданству: открыто для всех, только США, США и ПМЖ, страны ОБСЕ, НАТО, ЕС и т. д. Если в объявлении правило не указано или этап профиля не задан, стоит отметка «проверить». Членство в организациях упомянуто в описании, но не фильтруется.</p></div>
+      <div><h3>Подсчёт совпадения</h3><p>Попадание слова в заголовок даёт полный вес, в описание или темы 60%. Половина балла зависит от одного-двух самых сильных совпадений, половина от того, сколько слов из списка покрыто. Жёлтая отметка на шкале показывает порог профиля.</p></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- data ---------- */
+const S = q => "https://scholar.google.com/scholar?q=" + encodeURIComponent(q);
+const G = q => "https://www.google.com/search?q=" + encodeURIComponent(q);
+
+const PAPERS = [
+ {id:"p-ca",title:"NASA Spacecraft Conjunction Assessment and Collision Avoidance Best Practices Handbook (revised)",src:"NASA NTRS",date:"2026-08-01",dateLabel:"01 авг 2026",url:G("NASA Spacecraft Conjunction Assessment and Collision Avoidance Best Practices Handbook"),search:true,
+  sum:"Обновлённое руководство для операторов спутников по оценке сближений и предотвращению столкновений, по этапам миссии.",kw:"spacecraft satellite orbital debris collision avoidance space traffic management space sustainability"},
+ {id:"p-mrad",title:"Artemis vs ILRS: Overlapping Safety Zones and UNCLOS Precedent for Lunar Governance",src:"SSRN",date:null,url:S("Artemis vs ILRS Overlapping Safety Zones UNCLOS Precedent Lunar Governance"),search:true,
+  sum:"Мухаммад Хаир Мрад сравнивает пересекающиеся зоны безопасности Соглашений Артемиды и МНЛС (ILRS) с прецедентами морского права.",kw:"lunar Artemis Accords ILRS safety zones UNCLOS law of the sea governance space law China Russia"},
+ {id:"p-metz",title:"Economics of In-Space Industry and Competitiveness of Lunar-Derived Rocket Propellant",src:"arXiv",date:"2023-03-01",dateLabel:"мар 2023",url:S("Metzger Economics of In-Space Industry and Competitiveness of Lunar-Derived Rocket Propellant"),search:true,
+  sum:"Филип Мецгер моделирует топливо из лунного льда и показывает, что в окололунном пространстве оно может конкурировать с топливом, доставленным с Земли.",kw:"lunar cislunar ISRU space resources economics propellant"},
+ {id:"p-sodi",title:"Lunar Safety Zones: When Deconfliction Becomes Possession",src:"Space Policies",date:"2026-04-07",dateLabel:"07 апр 2026",url:S("Lunar Safety Zones: When Deconfliction Becomes Possession Sodi"),search:true,
+  sum:"Чезаре Соди: соперничающие модели управления на южном полюсе Луны могут превратить временные зоны безопасности в фактический территориальный контроль.",kw:"lunar safety zones south pole governance territorial non-appropriation Outer Space Treaty Article II"},
+ {id:"p-shadow",title:"ShadowCam search casts doubt on abundant lunar ice",src:"Phys.org",date:"2026-03-01",dateLabel:"мар 2026",url:G("ShadowCam search casts doubt on abundant lunar ice phys.org"),search:true,
+  sum:"Снимки ShadowCam внутри постоянно затенённых областей показывают меньше поверхностного водяного льда, чем ожидалось.",kw:"lunar ice PSR water space resources"},
+ {id:"p-unoosa",title:"An update on the work of the signatories to the Artemis Accords",src:"UNOOSA · COPUOS",date:"2026-02-01",dateLabel:"фев 2026",url:G("An update on the work of the signatories to the Artemis Accords COPUOS conference room paper"),search:true,
+  sum:"Документ зала заседаний подкомитета КОПУОС ООН о деятельности подписантов Соглашений Артемиды, включая зоны безопасности и космические ресурсы.",kw:"Artemis Accords COPUOS United Nations safety zones space resources multilateral space law"},
+ {id:"p-aiaa",title:"Modeling Safety-Zone Interactions and Resource Access in Lunar South-Pole PSRs",src:"AIAA SciTech 2026",date:"2026-01-01",dateLabel:"янв 2026",url:S("Modeling Safety-Zone Interactions and Resource Access in Lunar South-Pole PSRs"),search:true,
+  sum:"Как пересекающиеся зоны безопасности ограничивают доступ к ресурсам в постоянно затенённых областях.",kw:"lunar safety zones PSR space resources governance"},
+ {id:"p-lunarrf",title:"LunarRF: A Terrain-Aware Propagation Engine and Pole-Wide 3GPP Surface Coverage Atlas of the Lunar South Pole",src:"arXiv",date:"2026-10-01",dateLabel:"окт 2026",url:S("LunarRF Terrain-Aware Propagation Engine Lunar South Pole"),search:true,
+  sum:"Карта радиопокрытия южного полюса Луны с учётом рельефа для наземных сетей и роверов.",kw:"lunar south pole communications coverage"},
+ {id:"p-rover",title:"Lunar Rover Cargo Transport: Mission Concept and Field Test",src:"arXiv",date:"2026-01-01",dateLabel:"янв 2026",url:S("Lunar Rover Cargo Transport: Mission Concept and Field Test"),search:true,
+  sum:"Концепция миссии и полевые испытания грузовой логистики роверов на поверхности Луны.",kw:"lunar rover logistics"},
+ {id:"p-path",title:"Path planning algorithm for a South Pole lunar rover mission",src:"Acta Astronautica",date:"2025-01-01",dateLabel:"2025",url:S("Path planning algorithm for a South Pole lunar rover mission Acta Astronautica"),search:true,
+  sum:"Планирование маршрута ровера по рельефу южного полюса Луны.",kw:"lunar rover"},
+ {id:"r-swf",title:"Global Counterspace Capabilities: An Open Source Assessment",src:"Secure World Foundation · ежегодный доклад",date:null,url:"https://swfound.org/counterspace",
+  sum:"Открытая оценка противоспутниковых и других контркосмических возможностей разных государств, обновляется каждый год.",kw:"space security counterspace ASAT satellites military space"},
+ {id:"r-csis",title:"Space Threat Assessment",src:"CSIS Aerospace Security Project · ежегодный доклад",date:null,url:"https://aerospace.csis.org",
+  sum:"Ежегодный обзор угроз космическим системам: кинетические и некинетические средства, кибер- и РЭБ-угрозы.",kw:"space security counterspace ASAT threats"},
+ {id:"r-sipri",title:"SIPRI Yearbook: Armaments, Disarmament and International Security",src:"SIPRI · ежегодник",date:null,url:"https://www.sipri.org/yearbook",
+  sum:"Ежегодник SIPRI: ядерные арсеналы, военные расходы, контроль над вооружениями и конфликты.",kw:"arms control disarmament nuclear nonproliferation international security"},
+ {id:"r-oewg",title:"UN Open-Ended Working Group on reducing space threats through norms, rules and principles of responsible behaviours",src:"UNODA",date:null,url:G("OEWG reducing space threats norms rules principles responsible behaviours UNODA"),search:true,
+  sum:"Материалы рабочей группы ООН по снижению космических угроз через нормы ответственного поведения.",kw:"space security norms responsible behaviours United Nations arms control multilateral"},
+ {id:"r-unidir",title:"UNIDIR Space Security Portal and publications",src:"UNIDIR",date:null,url:"https://unidir.org",
+  sum:"Исследования UNIDIR по космической безопасности, мерам доверия и контролю над вооружениями.",kw:"space security arms control disarmament United Nations norms"},
+ {id:"r-memo",title:"Журнал «Мировая экономика и международные отношения»",src:"ИМЭМО РАН",date:null,url:"https://www.imemo.ru",
+  sum:"Ведущий российский журнал по международным отношениям и мировой экономике.",kw:"international relations international security foreign policy Russia"},
+ {id:"r-pir",title:"Аналитика ПИР-Центра по нераспространению и контролю над вооружениями",src:"ПИР-Центр",date:null,url:"https://pircenter.org",
+  sum:"Российский центр по нераспространению, ядерной политике и международной безопасности.",kw:"nonproliferation arms control nuclear international security Russia"},
+ {id:"r-riac",title:"Аналитика РСМД по космосу, вооружениям и внешней политике",src:"РСМД",date:null,url:"https://russiancouncil.ru",
+  sum:"Российский совет по международным делам: статьи и доклады по внешней политике, космосу и контролю над вооружениями.",kw:"international relations foreign policy space security arms control Russia multilateral"}
+];
+
+/* cit: all | us | uspr | quad | nato | osce | eu | null(not stated)
+   stages: ug grad phd early | null(not stated) */
+const PROGRAMS = [
+ {id:"unidir",name:"UNIDIR Space Security Research Fellowship",org:"UN Institute for Disarmament Research",kind:"fellowship",cit:"all",stages:["phd","early"],usual:"Следующий набор не объявлен",url:"https://unidir.org",
+  sum:"Годовая программа ООН для молодых исследователей космической безопасности: обучение, исследовательские работы и оплачиваемый очный семинар в Женеве. Отбор открыт по всему миру.",kw:"space security research fellowship United Nations disarmament early-career"},
+ {id:"iaf",name:"IAF Emerging Space Leaders Grant",org:"International Astronautical Federation",kind:"grant",cit:"all",stages:["ug","grad","phd","early"],usual:"Набор 2027 года не объявлен",url:"https://www.iafastro.org",
+  sum:"Покрывает поездку и регистрацию на Международный астронавтический конгресс для студентов и молодых специалистов в космической политике, праве и системах. Возраст 21–35.",kw:"space policy space law IAC young professionals grant travel"},
+ {id:"swf-fel",name:"Secure World Foundation Space Sustainability Research Fellowship",org:"Secure World Foundation",kind:"fellowship",cit:"all",stages:null,closed:"2026-06-01",next:"Обычно открывается весной, срок около 1 июня",url:"https://swfound.org",
+  sum:"Исследовательская заявка на 400 слов и CV. Гонорар $2,500.",kw:"space sustainability space policy satellite research fellowship"},
+ {id:"swf-simpson",name:"Dr. Michael Simpson Scholarship Fund",org:"Secure World Foundation",kind:"grant",cit:"all",stages:null,closed:"2026-06-15",next:"Обычно середина июня",url:"https://swfound.org",
+  sum:"До 35 лет, с принятым тезисом на IAC. От $500 до $1,500 на поездку.",kw:"space policy satellite IAC travel grant"},
+ {id:"sgla",name:"Space Generation Leadership Award (SGLA)",org:"Space Generation Advisory Council",kind:"grant",cit:"all",stages:null,closed:"2026-06-07",next:"Обычно конец мая – начало июня",url:"https://spacegeneration.org",
+  sum:"Для членов SGAC 18–35 лет. Оплачивает участие в SGC и IAC.",kw:"space policy leadership SGAC IAC young professionals"},
+ {id:"sgac-ohb",name:"SGAC and OHB SE Competition",org:"Space Generation Advisory Council",kind:"competition",cit:"all",stages:null,closed:"2026-05-23",next:"Обычно май",url:"https://spacegeneration.org",
+  sum:"Конкурс для членов SGAC 18–35 лет.",kw:"satellite space competition SGAC"},
+ {id:"belfer",name:"Belfer Center International Security Program Fellowship",org:"Harvard Kennedy School",kind:"fellowship",cit:"all",stages:["phd","early"],due:"2026-12-01",url:"https://www.belfercenter.org",
+  sum:"Пре- и постдокторские позиции для аспирантов после квалификационных экзаменов и недавних PhD. Приветствуются граждане всех стран.",kw:"international security fellowship nuclear space policy predoctoral postdoctoral"},
+ {id:"cisac",name:"Stanford CISAC Fellowships",org:"Stanford CISAC",kind:"fellowship",cit:"all",stages:["phd","early"],due:"2026-12-02",url:"https://cisac.fsi.stanford.edu",
+  sum:"Пре- и постдокторские позиции по международной, ядерной и научно-технической безопасности. Открыто для не-граждан США; аспирантов первых лет берут редко.",kw:"international security nuclear arms control fellowship"},
+ {id:"hertie",name:"Hertie School Stanton Nuclear Security Fellowship",org:"Hertie School, Berlin",kind:"fellowship",cit:null,stages:["early"],due:"2026-11-30",url:"https://www.hertie-school.org",
+  sum:"Берлинский фелловшип по международной безопасности и сдерживанию для постдоков и молодых преподавателей.",kw:"nuclear security deterrence international security fellowship arms control"},
+ {id:"rand",name:"RAND Stanton Nuclear Security Fellowship",org:"RAND",kind:"fellowship",cit:null,stages:["phd","early"],due:"2026-12-14",url:"https://www.rand.org",
+  sum:"Годовой исследовательский фелловшип по ядерной безопасности и сдерживанию. Постдоки, молодые преподаватели или аспиранты с тремя готовыми главами диссертации.",kw:"nuclear security deterrence fellowship arms control"},
+ {id:"cfr",name:"CFR Stanton Nuclear Security Fellowship",org:"Council on Foreign Relations",kind:"fellowship",cit:"us",stages:["early"],due:"2026-11-30",url:"https://www.cfr.org",
+  sum:"Годовой фелловшип для граждан США с PhD к началу программы, по ядерной безопасности и оборонной политике.",kw:"nuclear security defense policy fellowship"},
+ {id:"aaas",name:"AAAS Science & Technology Policy Fellowships",org:"AAAS",kind:"fellowship",cit:"us",stages:["early"],due:"2026-11-01",dueApprox:true,url:"https://www.aaas.org",
+  sum:"Срок 1 ноября каждый год. Нужны докторская степень (или инженерный магистр с опытом) и гражданство США.",kw:"science policy fellowship space policy"},
+ {id:"mirzayan",name:"Christine Mirzayan Science and Technology Policy Graduate Fellowship",org:"National Academies",kind:"fellowship",cit:"all",stages:["grad","phd","early"],usual:"Обычно середина августа",url:"https://www.nationalacademies.org",
+  sum:"Магистранты, аспиранты, постдоки и недавние выпускники. GPA от 3.3.",kw:"science policy fellowship space policy"},
+ {id:"mcss",name:"Matthew Isakowitz Commercial Space Scholarship",org:"Matthew Isakowitz Foundation",kind:"scholarship",cit:null,stages:["ug","grad"],closed:"2025-11-07",next:"Обычно начало ноября",url:G("Matthew Isakowitz Commercial Space Scholarship"),search:true,
+  sum:"Старшие курсы бакалавриата и магистранты. $1,000 и шанс на стажировку в коммерческом космосе в Вашингтоне.",kw:"commercial space space policy scholarship internship"},
+ {id:"fsl",name:"Future Space Leaders Grant",org:"Future Space Leaders Foundation",kind:"grant",cit:"uspr",stages:["grad","early"],closed:"2026-05-15",next:"Обычно середина мая",url:G("Future Space Leaders Foundation grant IAC"),search:true,
+  sum:"21–35 лет, магистранты или молодые специалисты с принятой статьёй на IAC. До $4,000.",kw:"space policy IAC grant travel"},
+ {id:"quad",name:"Quad Fellowship",org:"Quad Fellowship",kind:"fellowship",cit:"quad",stages:["grad"],usual:"Даты не проверены",url:"https://www.quadfellowship.org",
+  sum:"Граждане Австралии, Индии, Японии, США или стран АСЕАН в магистратуре или аспирантуре по STEM.",kw:"STEM graduate fellowship"},
+ {id:"si",name:"Smithsonian Institution Fellowship Program (SIFP)",org:"Smithsonian Institution",kind:"fellowship",cit:"all",stages:["grad","phd","early"],closed:"2025-10-15",next:"Обычно середина октября",url:"https://www.si.edu",
+  sum:"Треки для магистрантов, аспирантов, постдоков и старших исследователей. Цикл 2027 года не был опубликован на момент проверки.",kw:"research fellowship"},
+ {id:"ted",name:"TED Fellows Program",org:"TED",kind:"program",cit:"all",stages:null,usual:"Даты на странице не указаны",url:"https://www.ted.com",
+  sum:"Глобальная программа для людей, меняющих свою область. Дат на странице при проверке не было.",kw:"fellowship leadership"},
+ {id:"asclepios",name:"Asclepios Analog Astronaut Missions",org:"Asclepios",kind:"program",cit:"all",stages:null,closed:"2025-01-15",next:"Обычно середина января, на миссию следующего лета",url:G("Asclepios analog astronaut mission application"),search:true,
+  sum:"Аналоговые миссии для студентов любого уровня, 18+, хороший английский и здоровье.",kw:"lunar astronaut analog mission"},
+ {id:"amelia",name:"Amelia Earhart Fellowship",org:"Zonta International",kind:"fellowship",cit:"all",stages:["phd"],due:"2026-11-15",url:"https://www.zonta.org",
+  sum:"Для женщин любой национальности, отучившихся минимум год в аспирантуре (или с аэрокосмическим магистром). $12,000.",kw:"aerospace space fellowship women PhD"},
+ {id:"sigmaxi",name:"Sigma Xi Grants in Aid of Research",org:"Sigma Xi",kind:"grant",cit:"all",stages:["ug","grad","phd"],due:"2027-03-15",url:"https://www.sigmaxi.org",
+  sum:"Весенний и осенний раунды. Студенты бакалавриата и магистратуры, GPA от 3.0.",kw:"research grant"},
+ {id:"fulbright",name:"Fulbright U.S. Student Program",org:"US Department of State",kind:"scholarship",cit:"us",stages:["grad"],closed:"2026-10-06",next:"Открывается весной, национальный срок в начале октября",url:"https://us.fulbrightonline.org",
+  sum:"Для граждан США с дипломом бакалавра. Обладатели PhD, как правило, не допускаются.",kw:"fellowship research abroad scholarship"},
+ {id:"lpi",name:"LPI Summer Intern Program in Planetary Science",org:"Lunar and Planetary Institute",kind:"internship",cit:"all",stages:["ug"],due:"2026-12-14",url:"https://www.lpi.usra.edu",
+  sum:"Студенты бакалавриата с 50+ семестровыми часами, работа один на один с учёным в LPI или NASA Johnson. Открыто для иностранцев.",kw:"planetary science lunar internship"},
+ {id:"un-intern",name:"UN Internship Programme",org:"Организация Объединённых Наций",kind:"internship",cit:"all",stages:["ug","grad","phd"],usual:"Вакансии публикуются круглый год",url:"https://careers.un.org",
+  sum:"Стажировки в Секретариате ООН в Нью-Йорке, Женеве, Вене и других местах. Обычно для магистрантов, аспирантов и студентов последнего курса бакалавриата.",kw:"United Nations internship international organizations diplomacy multilateral"},
+ {id:"un-ypp",name:"UN Young Professionals Programme (YPP)",org:"Организация Объединённых Наций",kind:"program",cit:null,stages:["grad","early"],usual:"Ежегодно; список стран-участниц меняется каждый год",url:"https://careers.un.org",
+  sum:"Экзамен для входа в карьеру в Секретариате ООН. Нужен минимум бакалавриат, возраст до 32 лет и гражданство страны из списка этого года.",kw:"United Nations diplomacy career international organizations"},
+ {id:"unoosa",name:"Стажировка в UNOOSA (Вена)",org:"Управление ООН по вопросам космического пространства",kind:"internship",cit:"all",stages:["grad","phd"],usual:"Через программу стажировок ООН, круглый год",url:"https://www.unoosa.org",
+  sum:"Работа с КОПУОС, космическим правом и программами ООН по космосу. Подача через портал вакансий ООН.",kw:"space law space policy United Nations COPUOS internship"},
+ {id:"chevening",name:"Chevening Scholarships",org:"Правительство Великобритании",kind:"scholarship",cit:null,stages:["grad"],usual:"Обычно открывается в августе, срок в начале ноября",url:"https://www.chevening.org",
+  sum:"Полное финансирование магистратуры в Великобритании для будущих лидеров. Список допустимых стран меняется, проверьте свою страну.",kw:"master's scholarship UK international relations diplomacy leadership"},
+ {id:"daad",name:"DAAD Scholarships",org:"DAAD",kind:"scholarship",cit:null,stages:["grad","phd"],usual:"Сроки зависят от программы и страны",url:"https://www.daad.de",
+  sum:"Стипендии для магистратуры, аспирантуры и исследовательских стажировок в Германии. Условия различаются по странам.",kw:"Germany scholarship master's PhD research international relations"},
+ {id:"erasmus",name:"Erasmus Mundus Joint Masters",org:"Европейская комиссия",kind:"scholarship",cit:"all",stages:["grad"],usual:"Сроки у каждой программы свои, чаще октябрь–январь",url:"https://erasmus-plus.ec.europa.eu",
+  sum:"Совместные магистратуры нескольких европейских вузов со стипендиями, в том числе по международной безопасности и европейским исследованиям.",kw:"master's scholarship Europe international relations international security"},
+ {id:"schwarzman",name:"Schwarzman Scholars",org:"Tsinghua University",kind:"scholarship",cit:"all",stages:["ug","grad"],usual:"Обычно срок в сентябре",url:"https://www.schwarzmanscholars.org",
+  sum:"Годовая магистратура по глобальным делам в Пекине. Возраст 18–28, бакалавриат к началу программы.",kw:"master's global affairs China leadership scholarship international relations"},
+ {id:"yenching",name:"Yenching Academy of Peking University",org:"Peking University",kind:"scholarship",cit:"all",stages:["grad"],usual:"Обычно срок в декабре",url:"https://yenchingacademy.pku.edu.cn",
+  sum:"Междисциплинарная магистратура по китаеведению, включая международные отношения, с полным финансированием.",kw:"master's China studies scholarship international relations foreign policy"},
+ {id:"osce-sps",name:"OSCE Scholarship for Peace and Security",org:"ОБСЕ и UNODA",kind:"program",cit:"osce",stages:["grad","early"],usual:"Даты не проверены, уточните на странице",url:G("OSCE Scholarship for Peace and Security"),search:true,
+  sum:"Обучение по контролю над вооружениями, разоружению и нераспространению для молодых специалистов из стран ОБСЕ: онлайн-курс и очная часть.",kw:"arms control disarmament nonproliferation training young professionals"},
+ {id:"y4d",name:"UNODA Youth for Disarmament",org:"Управление ООН по вопросам разоружения",kind:"program",cit:"all",stages:["ug","grad","early"],usual:"Даты не проверены, уточните на странице",url:G("UNODA Youth for Disarmament youth champions"),search:true,
+  sum:"Молодёжные программы ООН по разоружению: обучение, менторство, участие в мероприятиях.",kw:"disarmament arms control youth United Nations"},
+ {id:"gcsp",name:"GCSP: курсы для молодых специалистов",org:"Geneva Centre for Security Policy",kind:"program",cit:"all",stages:["grad","early"],usual:"Расписание курсов на сайте",url:"https://www.gcsp.ch",
+  sum:"Женевские курсы по международной безопасности и внешней политике, часть со стипендиями.",kw:"international security foreign policy training Geneva diplomacy"},
+ {id:"lachs",name:"Manfred Lachs Space Law Moot Court Competition",org:"International Institute of Space Law",kind:"competition",cit:"all",stages:["ug","grad"],usual:"Обычно региональные раунды весной, финал на IAC",url:G("Manfred Lachs Space Law Moot Court Competition"),search:true,
+  sum:"Командный конкурс по космическому праву: письменные меморандумы и устные раунды по вымышленному делу.",kw:"space law moot court competition Outer Space Treaty"},
+ {id:"sipri",name:"SIPRI: стажировки и вакансии",org:"SIPRI",kind:"internship",cit:"all",stages:["grad"],usual:"По мере открытия вакансий",url:"https://www.sipri.org",
+  sum:"Исследовательские стажировки в Стокгольме по контролю над вооружениями, военным расходам и конфликтам.",kw:"arms control disarmament research internship international security"},
+ {id:"pir",name:"Международная школа ПИР-Центра по проблемам глобальной безопасности",org:"ПИР-Центр",kind:"school",cit:null,stages:["grad","early"],usual:"Даты не проверены, уточните на странице",url:"https://pircenter.org",
+  sum:"Интенсив по нераспространению, ядерной политике и международной безопасности для молодых специалистов и студентов.",kw:"nonproliferation arms control international security school Russia"},
+ {id:"nato",name:"NATO Internship Programme",org:"NATO",kind:"internship",cit:"nato",stages:["grad"],usual:"Обычно один набор в год",url:"https://www.nato.int",
+  sum:"Стажировки в штаб-квартире НАТО. Только граждане стран-членов.",kw:"international security internship defense policy"},
+ {id:"bluebook",name:"European Commission Blue Book Traineeship",org:"Европейская комиссия",kind:"internship",cit:"eu",stages:["grad"],usual:"Два набора в год",url:G("European Commission Blue Book traineeship"),search:true,
+  sum:"Пятимесячные оплачиваемые стажировки в Еврокомиссии. В основном для граждан ЕС, часть мест для других стран.",kw:"European Union traineeship internship EU policy international relations"}
+];
+
+const KINDS = {fellowship:"Фелловшип",scholarship:"Стипендия",grant:"Грант",internship:"Стажировка",program:"Программа",competition:"Конкурс",school:"Школа"};
+const STAGES = {ug:"бакалавриат",grad:"магистратура",phd:"аспирантура",early:"молодой специалист"};
+const CITL = {all:"Открыто для всех стран",us:"Только граждане США",uspr:"Граждане или ПМЖ США",quad:"Страны Quad и АСЕАН",nato:"Только страны НАТО",osce:"Страны ОБСЕ",eu:"Преимущественно граждане ЕС"};
+const CITNAME = {"":"не указано",ru:"Россия",eu:"страна ЕС",us:"США",uspr:"ПМЖ США",other:"другое"};
+
+const K = (t,w)=>({t,w});
+const PROFILES = [
+ {id:"sec-ug",area:"Международная безопасность",name:"Безопасность · бакалавриат",stage:"ug",desc:"Контроль над вооружениями, сдерживание, ООН, космическая безопасность",
+  feed:"Международная безопасность в широком смысле: любой давности, мягкий порог для знакомства с темой.",opp:"Стажировки, стипендии и молодёжные программы, открытые бакалаврам.",
+  rkw:[K("international security",3),K("arms control",2),K("nuclear",2),K("nonproliferation",2),K("deterrence",1),K("United Nations",1),K("space security",2),K("Russia",1)],
+  rs:["norms","disarmament","counterspace","foreign policy"],
+  okw:[K("internship",3),K("international security",3),K("United Nations",2),K("scholarship",2),K("diplomacy",2),K("youth",1)],os:["training","leadership","disarmament"],rBar:20,oBar:25},
+ {id:"sec-grad",area:"Международная безопасность",name:"Безопасность · магистратура",stage:"grad",desc:"Сдерживание, контроль над вооружениями, ядерная политика, нормы",
+  feed:"Работы по сдерживанию и контролю над вооружениями, порог чуть строже.",opp:"Фелловшипы, магистерские стипендии и исследовательские стажировки.",
+  rkw:[K("international security",3),K("arms control",3),K("deterrence",2),K("nuclear",2),K("nonproliferation",2),K("space security",2),K("norms",1)],
+  rs:["counterspace","ASAT","multilateral","Russia"],
+  okw:[K("fellowship",3),K("international security",3),K("nuclear",2),K("arms control",2),K("master's",1)],os:["internship","research","Geneva"],rBar:25,oBar:25},
+ {id:"space-ug",area:"Космическая безопасность",name:"Космос и безопасность · бакалавриат",stage:"ug",desc:"Спутники, мусор, Артемида, космическое право",
+  feed:"Спутники, космический мусор, Луна и основы космического права.",opp:"Конкурсы, молодёжные гранты и стажировки в космической политике.",
+  rkw:[K("space security",3),K("satellite",2),K("debris",2),K("Artemis",2),K("lunar",2),K("space law",2),K("counterspace",1)],
+  rs:["COPUOS","space sustainability","Outer Space Treaty","norms"],
+  okw:[K("space policy",3),K("space law",2),K("internship",2),K("competition",2),K("SGAC",1)],os:["IAC","United Nations","youth"],rBar:20,oBar:25},
+ {id:"space-grad",area:"Космическая безопасность",name:"Космос и безопасность · магистратура",stage:"grad",desc:"Контркосмос, нормы, Договор о космосе, Артемида и МНЛС",
+  feed:"Контркосмические возможности, нормы ответственного поведения и космическое право.",opp:"Фелловшипы и гранты по космической политике, поездки на IAC.",
+  rkw:[K("space security",3),K("counterspace",3),K("space law",3),K("Outer Space Treaty",2),K("Artemis Accords",2),K("ILRS",2),K("COPUOS",2),K("norms",2),K("debris",1)],
+  rs:["ASAT","safety zones","space sustainability","arms control"],
+  okw:[K("space policy",3),K("space security",3),K("fellowship",2),K("IAC",2),K("space law",2)],os:["United Nations","SGAC","research"],rBar:25,oBar:25},
+ {id:"dip-ug",area:"Дипломатия и МО",name:"Дипломатия · бакалавриат",stage:"ug",desc:"ООН, многосторонность, внешняя политика",
+  feed:"Международные отношения, ООН и многосторонняя дипломатия.",opp:"Стажировки в международных организациях и стипендии на магистратуру.",
+  rkw:[K("international relations",3),K("United Nations",3),K("diplomacy",3),K("multilateral",2),K("foreign policy",2),K("Russia",2)],
+  rs:["international security","governance","COPUOS"],
+  okw:[K("United Nations",3),K("internship",3),K("diplomacy",2),K("scholarship",2),K("international organizations",2)],os:["master's","youth","leadership"],rBar:20,oBar:25},
+ {id:"dip-grad",area:"Дипломатия и МО",name:"Дипломатия · магистратура",stage:"grad",desc:"Внешняя политика, международные организации, глобальное управление",
+  feed:"Внешняя политика и многосторонние институты, включая космическую дипломатию.",opp:"Магистерские стипендии, программы ООН и фелловшипы.",
+  rkw:[K("international relations",3),K("foreign policy",3),K("multilateral",2),K("United Nations",2),K("Russia",2),K("governance",1),K("COPUOS",1)],
+  rs:["diplomacy","norms","international security"],
+  okw:[K("master's",3),K("scholarship",3),K("international relations",3),K("United Nations",2),K("diplomacy",2),K("fellowship",2)],os:["leadership","China","Europe"],rBar:20,oBar:25},
+ {id:"arms-phd",area:"Контроль над вооружениями",name:"Нераспространение · аспирантура",stage:"phd",desc:"Ядерная политика, разоружение, ПСО, сдерживание",
+  feed:"Ядерная политика, разоружение и противоспутниковое оружие, строгий порог.",opp:"Пре- и постдокторские фелловшипы, тренинги по разоружению.",
+  rkw:[K("arms control",3),K("nonproliferation",3),K("nuclear",3),K("deterrence",2),K("disarmament",2),K("ASAT",2),K("space security",1)],
+  rs:["norms","counterspace","Russia"],
+  okw:[K("arms control",3),K("nuclear",3),K("disarmament",3),K("fellowship",2),K("nonproliferation",2)],os:["international security","training"],rBar:30,oBar:25},
+ {id:"luna-grad",area:"Лунное управление",name:"Луна и окололунное пространство · магистратура",stage:"grad",desc:"Артемида и МНЛС, зоны безопасности, ресурсы, Договор о космосе",
+  feed:"Управление на Луне: зоны безопасности, ресурсы, Артемида против МНЛС.",opp:"Космическое право и политика: фелловшипы, ООН, конкурсы.",
+  rkw:[K("lunar",3),K("cislunar",3),K("Artemis Accords",3),K("ILRS",3),K("safety zones",3),K("space resources",2),K("Outer Space Treaty",2),K("governance",2),K("COPUOS",2),K("UNCLOS",1)],
+  rs:["non-appropriation","south pole","space law"],
+  okw:[K("space law",3),K("space policy",3),K("United Nations",2),K("fellowship",2),K("IAC",1)],os:["competition","COPUOS","research"],rBar:20,oBar:25}
+];
+
+/* ---------- state ---------- */
+const LS = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let custom = LS.get("ms.custom",[]);
+let stars = LS.get("ms.stars",{});
+let regTab = "all";
+
+function fromProfile(p){
+  return {profileId:p.id,rkw:p.rkw.map(k=>({...k})),okw:p.okw.map(k=>({...k})),rs:[...(p.rs||[])],os:[...(p.os||[])],
+    rBar:p.rBar??20,oBar:p.oBar??25,age:p.age||"any",maxP:p.maxP||10,undated:p.undated??true,
+    kinds:p.kinds||Object.fromEntries(Object.keys(KINDS).map(k=>[k,true])),skip:p.skip||0,hidePast:p.hidePast??true,hideInel:p.hideInel??true,
+    stage:p.stage||"",cit:p.cit||"",sort:p.sort||"match",who:p.who||""};
+}
+function allProfiles(){return PROFILES.concat(custom)}
+let state = LS.get("ms.state",null);
+if(!state || !state.rkw) state = fromProfile(PROFILES[6]);
+const save = ()=>LS.set("ms.state",state);
+
+/* ---------- helpers ---------- */
+const $ = id=>document.getElementById(id);
+const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today = (()=>{const d=new Date();d.setHours(0,0,0,0);return d})();
+const pd = s=>{if(!s)return null;const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const days = s=>Math.round((pd(s)-today)/86400000);
+const MON = ["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
+const fmt = s=>{const d=pd(s);return d.getDate()+" "+MON[d.getMonth()]+" "+d.getFullYear()};
+const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4&&(h<12||h>14)?b:c)};
+const dword = n=>n+" "+plural(n,"день","дня","дней");
+const WL = {1:"НИЗ",2:"СР",3:"ВЫС"};
+
+function score(item,kws,title){
+  if(!kws.length) return {s:0,hits:[]};
+  const T=(title||"").toLowerCase(), B=((item.sum||"")+" "+(item.kw||"")+" "+(item.org||item.src||"")).toLowerCase();
+  let tot=0,sumw=0;const c=[],hits=[];
+  for(const k of kws){const t=k.t.toLowerCase().trim();if(!t)continue;sumw+=k.w;
+    const h=T.includes(t)?1:(B.includes(t)?0.6:0);if(h){hits.push(k.t);c.push(h*k.w);tot+=h*k.w}}
+  if(!sumw) return {s:0,hits};
+  c.sort((a,b)=>b-a);
+  const strength=((c[0]||0)+(c[1]||0))/6, coverage=tot/sumw;
+  return {s:Math.round(100*(0.5*strength+0.5*coverage)),hits};
+}
+function stageFit(p){if(!state.stage||!p.stages)return "chk";return p.stages.includes(state.stage)?"ok":"no"}
+function citFit(p){
+  const c=p.cit,u=state.cit;
+  if(c==="all")return "ok";
+  if(!c||!u)return "chk";
+  const T={us:{us:"ok"},uspr:{us:"ok",uspr:"ok"},quad:{us:"ok",ru:"no",eu:"no",uspr:"no"},nato:{us:"ok",ru:"no",uspr:"no",eu:"chk"},
+    osce:{us:"ok",ru:"ok",eu:"ok",uspr:"chk"},eu:{eu:"ok"}};
+  const r=T[c]&&T[c][u];
+  if(r) return r;
+  if(c==="us"||c==="uspr") return "no";
+  return "chk";
+}
+function fit(p){const s=stageFit(p),c=citFit(p);if(s==="no")return {v:"no",why:"stage"};if(c==="no")return {v:"no",why:"cit"};return {v:(s==="ok"&&c==="ok")?"ok":"chk"}}
+function status(p){
+  if(p.due){const n=days(p.due);if(n>=0)return {k:"open",n,date:p.due};return {k:"closed",date:p.due,next:p.next}}
+  if(p.opens&&days(p.opens)>0)return {k:"opening",n:days(p.opens),date:p.opens};
+  if(p.closed)return {k:"closed",date:p.closed,next:p.next};
+  return {k:"usual",text:p.usual||"Дата не опубликована"};
+}
+const FITL = {ok:["ok","Подходит"],no:["no","Скорее нет"],chk:["chk","Проверить"]};
+function fitPill(f){const [c,l]=FITL[f.v];return `<span class="pill ${c}">${l}</span>`}
+function citPill(p){return p.cit?`<span class="pill plain">${esc(CITL[p.cit])}</span>`:`<span class="pill plain">Гражданство не указано</span>`}
+
+/* ---------- compute ---------- */
+function compute(){
+  const st={scanned:PAPERS.length+PROGRAMS.length,sent:0,below:0,date:0,limit:0,deadline:0,stage:0,cit:0,kind:0};
+  const filtered=[];
+  // research
+  let res=[];
+  for(const p of PAPERS){
+    const sc=score(p,state.rkw,p.title);
+    if(!p.date){if(!state.undated){st.date++;filtered.push([p.title,"без даты"]);continue}}
+    else if(state.age!=="any"){const yrs=(today-pd(p.date))/(365.25*86400000);if(yrs>+state.age){st.date++;filtered.push([p.title,"старше "+state.age+" г."]);continue}}
+    if(sc.s<state.rBar){st.below++;filtered.push([p.title,"совпадение "+sc.s+" ниже порога "+state.rBar]);continue}
+    res.push({...p,sc});
+  }
+  res.sort((a,b)=>b.sc.s-a.sc.s||(b.date||"").localeCompare(a.date||""));
+  const over=res.slice(state.maxP);over.forEach(p=>{st.limit++;filtered.push([p.title,"сверх лимита в "+state.maxP+" работ"])});
+  res=res.slice(0,state.maxP);
+  // programs
+  const watch=[],opps=[];
+  for(const p of PROGRAMS){
+    const sc=score(p,state.okw,p.name),f=fit(p),s=status(p);
+    const o={...p,sc,f,s};
+    if(!state.kinds[p.kind]){st.kind++;filtered.push([p.name,"тип «"+KINDS[p.kind]+"» выключен"]);continue}
+    const soon=(s.k==="open"&&s.n<=60)||(s.k==="opening"&&s.n<=30);
+    if(f.v==="no"&&state.hideInel){st[f.why]++;filtered.push([p.name,f.why==="stage"?"не тот этап":"правило гражданства"]);continue}
+    if(s.k==="open"&&s.n<state.skip){st.deadline++;filtered.push([p.name,"до дедлайна "+dword(s.n)]);continue}
+    if(soon&&f.v!=="no"){watch.push(o);continue}
+    if(s.k==="closed"&&state.hidePast){st.deadline++;filtered.push([p.name,"дедлайн прошёл"]);continue}
+    if(sc.s<state.oBar){st.below++;filtered.push([p.name,"совпадение "+sc.s+" ниже порога "+state.oBar]);continue}
+    opps.push(o);
+  }
+  watch.sort((a,b)=>a.s.n-b.s.n);
+  const dkey=o=>o.s.k==="open"?o.s.n:(o.s.k==="opening"?500+o.s.n:9999);
+  opps.sort(state.sort==="deadline"?(a,b)=>dkey(a)-dkey(b)||b.sc.s-a.sc.s:(a,b)=>b.sc.s-a.sc.s||dkey(a)-dkey(b));
+  st.sent=watch.length+res.length+opps.length;
+  return {st,filtered,res,watch,opps};
+}
+
+/* ---------- render ---------- */
+function curProfile(){return allProfiles().find(p=>p.id===state.profileId)}
+function renderProfiles(){
+  const cards=allProfiles().map(p=>`<button class="pcard" type="button" data-p="${esc(p.id)}" aria-pressed="${p.id===state.profileId}">
+    <span class="eyebrow">${esc(p.custom?"Ваш профиль":p.area)}</span><strong>${esc(p.name)}</strong>
+    <span class="stage">${esc(p.stage?STAGES[p.stage]:"этап не указан")}</span><span class="desc">${esc(p.desc||"")}</span>
+    ${p.custom?`<span class="del" role="button" tabindex="0" data-del="${esc(p.id)}">Удалить</span>`:""}</button>`).join("");
+  $("profiles").innerHTML=cards+`<button class="pcard new" type="button" id="newp"><span class="eyebrow">Ваша очередь</span><strong>+ Новый профиль</strong><span class="desc">Сохранить текущие настройки как свой профиль.</span></button>`;
+  const p=curProfile();
+  $("pnotes").innerHTML=p?`<div><b>Лента работ</b>${esc(p.feed||"Ваши ключевые слова и фильтры.")}</div><div><b>Возможности</b>${esc(p.opp||"Программы по вашим ключевым словам.")}</div><div><b>Фильтры</b>Этап: ${esc(state.stage?STAGES[state.stage]:"не указан")}. Гражданство: ${esc(CITNAME[state.cit])}. ${state.cit?"":"Выберите гражданство ниже, чтобы увидеть, куда вы можете подать."}</div>`:"";
+}
+function kwChips(list,sugg,elK,elS,key,skey){
+  $(elK).innerHTML=list.map((k,i)=>`<span class="kw"><span>${esc(k.t)}</span><button type="button" class="w" data-w="${k.w}" data-i="${i}" data-l="${key}" aria-label="Вес: ${WL[k.w]}">${WL[k.w]}</button><button type="button" class="x" data-x="${i}" data-l="${key}" aria-label="Убрать ${esc(k.t)}">×</button></span>`).join("")||`<p class="empty">Нет слов. Добавьте хотя бы одно.</p>`;
+  const have=new Set(list.map(k=>k.t.toLowerCase()));
+  $(elS).innerHTML=sugg.filter(s=>!have.has(s.toLowerCase())).map(s=>`<button type="button" class="sugg" data-s="${esc(s)}" data-l="${key}">+ ${esc(s)}</button>`).join("");
+}
+function renderControls(){
+  kwChips(state.rkw,state.rs,"r-kws","r-sugg","rkw");
+  kwChips(state.okw,state.os,"o-kws","o-sugg","okw");
+  $("r-bar").value=state.rBar;$("r-bar-o").textContent=state.rBar+(state.rBar<25?" · мягко":state.rBar<40?" · сбалансированно":" · строго");
+  $("o-bar").value=state.oBar;$("o-bar-o").textContent=state.oBar+(state.oBar<25?" · мягко":state.oBar<40?" · сбалансированно":" · строго");
+  $("r-age").value=state.age;$("r-max").value=String(state.maxP);$("r-undated").checked=state.undated;
+  $("o-skip").value=String(state.skip);$("o-past").checked=state.hidePast;$("o-inel").checked=state.hideInel;
+  $("stage").value=state.stage;$("cit").value=state.cit;$("sort").value=state.sort;$("who").value=state.who||"";
+  $("kinds").innerHTML=Object.entries(KINDS).map(([k,l])=>`<label class="check"><input type="checkbox" data-kind="${k}" ${state.kinds[k]?"checked":""}> ${l}</label>`).join("");
+}
+function starBtn(id){return `<button type="button" class="star" data-star="${esc(id)}" aria-pressed="${!!stars[id]}" aria-label="В избранное">★</button>`}
+function meter(s,bar){return `<div class="meter" aria-hidden="true"><i style="width:${Math.min(100,s)}%"></i><b style="left:${Math.min(100,bar)}%"></b></div>`}
+function dueLine(o){
+  const s=o.s;
+  if(s.k==="open")return `<span class="pill due">Срок ${o.dueApprox?"около ":""}${fmt(s.date)} · ${s.n===0?"сегодня":"осталось "+dword(s.n)}</span>`;
+  if(s.k==="opening")return `<span class="pill due">Открывается ${fmt(s.date)}</span>`;
+  if(s.k==="closed")return `<span class="pill plain">Закрыто ${fmt(s.date)}</span>`;
+  return `<span class="pill plain">${esc(s.text)}</span>`;
+}
+function oppItem(o,watch){
+  return `<div class="item"><div class="kicker">${esc(KINDS[o.kind])} · ${esc(o.org)}${watch?"":" · совпадение "+o.sc.s}</div>
+   <div class="side">${watch?"":`<span class="score">${o.sc.s}</span>${meter(o.sc.s,state.oBar)}`}${starBtn(o.id)}</div>
+   <h4><a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.name)}</a>${o.search?` <span class="searchlink">· поиск</span>`:""}</h4>
+   <div><div class="pills">${dueLine(o)}${fitPill(o.f)}${citPill(o)}</div>
+   <p style="margin-top:6px">${esc(o.sum)}</p>
+   <div class="tags">${watch?`<span class="tag" style="background:var(--amber-soft);color:var(--amber)">В листе наблюдения</span>`:""}${o.sc.hits.map(h=>`<span class="tag">${esc(h)}</span>`).join("")}</div></div></div>`;
+}
+function paperItem(p){
+  const also=PROFILES.filter(q=>q.id!==state.profileId&&score(p,q.rkw,p.title).s>=q.rBar).map(q=>q.name.split(" · ")[0]+" · "+q.name.split(" · ")[1]);
+  return `<div class="item"><div class="kicker">${esc(p.src)} · ${esc(p.date?p.dateLabel:"без даты")} · совпадение ${p.sc.s}</div>
+   <div class="side"><span class="score">${p.sc.s}</span>${meter(p.sc.s,state.rBar)}${starBtn(p.id)}</div>
+   <h4><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>${p.search?` <span class="searchlink">· поиск</span>`:""}</h4>
+   <div><p>${esc(p.sum)}</p><div class="tags">${p.sc.hits.map(h=>`<span class="tag">${esc(h)}</span>`).join("")}</div>
+   ${also.length?`<p style="font-size:12px;margin-top:4px">Также в профилях: ${esc(also.slice(0,3).join(", "))}</p>`:""}</div></div>`;
+}
+function renderDigest(r){
+  const p=curProfile();
+  const dstr=today.getDate()+" "+MON[today.getMonth()]+" "+today.getFullYear();
+  $("subject").textContent=`Тема: Дайджест — ${r.watch.length} в листе наблюдения, ${r.res.length} ${plural(r.res.length,"работа","работы","работ")}, ${r.opps.length} ${plural(r.opps.length,"возможность","возможности","возможностей")}`;
+  $("sheet").innerHTML=`<header class="sheet-head"><span class="stamp" aria-hidden="true">БРИФИНГ</span><span class="eyebrow">Еженедельный дайджест</span>
+    <h2>${esc(p?p.name:"Ваш профиль")}</h2><span class="meta">${dstr} · ${r.watch.length} наблюдение · ${r.res.length} исследования · ${r.opps.length} возможности · просмотрено ${r.st.scanned}</span></header>
+   <section class="block"><div class="block-head"><h3>Лист наблюдения</h3><span class="eyebrow">${r.watch.length} открыто или скоро</span></div>
+    ${r.watch.map(o=>oppItem(o,true)).join("")||`<p class="empty">В ближайшие 60 дней нет дедлайнов, подходящих этому профилю.</p>`}</section>
+   <section class="block"><div class="block-head"><h3>Исследования</h3><span class="eyebrow">${r.res.length} найдено</span></div>
+    ${r.res.map(paperItem).join("")||`<p class="empty">Ничего не прошло порог. Снизьте порог совпадения или добавьте ключевые слова.</p>`}</section>
+   <section class="block"><div class="block-head"><h3>Возможности</h3><span class="eyebrow">${r.opps.length} найдено</span></div>
+    ${r.opps.map(o=>oppItem(o,false)).join("")||`<p class="empty">Ничего не прошло фильтры. Ослабьте порог или включите больше типов.</p>`}</section>`;
+  $("filtered-list").innerHTML=r.filtered.map(([t,w])=>`<li><b>${esc(t)}</b> — ${esc(w)}</li>`).join("")||"<li>Ничего не отфильтровано.</li>";
+  const S=r.st,rows=[["Просмотрено",S.scanned],["Отправлено",S.sent,"sent"],["Ниже порога",S.below],["Вне окна дат или без даты",S.date],["Сверх лимита работ",S.limit],["Дедлайн прошёл или слишком близко",S.deadline],["Не тот этап",S.stage],["Правило гражданства",S.cit],["Тип выключен",S.kind]];
+  $("stats").innerHTML=rows.map(([a,b,c])=>`<div class="${c||""}"><dt>${a}</dt><dd>${b}</dd></div>`).join("");
+}
+function renderRunway(){
+  const list=PROGRAMS.map(p=>({...p,s:status(p),f:fit(p)})).filter(o=>o.f.v!=="no"&&state.kinds[o.kind]);
+  const dated=list.filter(o=>o.s.k==="open"&&o.s.n<=120).sort((a,b)=>a.s.n-b.s.n);
+  const rolling=list.filter(o=>o.s.k==="usual").length;
+  $("rw-meta").textContent=`ближайшие 120 дней · ${dated.length} с дедлайном · ${rolling} без фиксированной даты`;
+  $("runway").innerHTML=dated.map(o=>`<div class="rw"><div class="bar"><div class="fill" style="width:${Math.max(2,o.s.n/120*100)}%"></div><span class="lbl">${esc(o.name)}</span></div><span class="d">${o.s.n} д</span></div>`).join("")||`<p class="empty">Нет дедлайнов в ближайшие 120 дней для этого профиля.</p>`;
+}
+function renderShortlist(){
+  const ids=Object.keys(stars).filter(k=>stars[k]);
+  const items=ids.map(id=>PROGRAMS.find(p=>p.id===id)||PAPERS.find(p=>p.id===id)).filter(Boolean);
+  $("shortlist").innerHTML=items.map(it=>{const s=it.name?status(it):null;
+    return `<div class="si"><a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.name||it.title)}</a><span class="mono" style="font-size:12px;color:var(--muted);white-space:nowrap">${s&&s.k==="open"?fmt(s.date):(s&&s.k==="opening"?"с "+fmt(s.date):"")}</span></div>`}).join("")||`<p class="empty">Пока ничего не отмечено.</p>`;
+}
+const TABS=[["all","Все"],["can","Можно подать"],["match","По интересам"],["open","Открыто или скоро"],["search","Ссылка-поиск"]];
+function renderRegistry(){
+  $("tabs").innerHTML=TABS.map(([k,l])=>`<button type="button" data-tab="${k}" aria-pressed="${k===regTab}">${l}</button>`).join("");
+  const p=curProfile();$("th-fit").textContent="Подходит: "+(p?p.name.split(" · ")[0]:"профиль");
+  const q=$("reg-q").value.trim().toLowerCase();
+  const rank=o=>o.s.k==="open"?o.s.n:o.s.k==="opening"?1000+o.s.n:o.s.k==="closed"?3000:2000;
+  let rows=PROGRAMS.map(p=>({...p,s:status(p),f:fit(p),sc:score(p,state.okw,p.name)}));
+  const counts={can:rows.filter(o=>o.f.v!=="no").length};
+  counts.canMatch=rows.filter(o=>o.f.v!=="no"&&o.sc.s>=state.oBar).length;
+  const openN=rows.filter(o=>o.s.k==="open"||o.s.k==="opening").length;
+  $("tm-total").textContent=PROGRAMS.length+PAPERS.length;$("tm-open").textContent=openN;
+  rows=rows.filter(o=>regTab==="all"||(regTab==="can"&&o.f.v!=="no")||(regTab==="match"&&o.sc.s>=state.oBar)||(regTab==="open"&&(o.s.k==="open"||o.s.k==="opening"))||(regTab==="search"&&o.search));
+  if(q)rows=rows.filter(o=>(o.name+" "+o.org+" "+o.sum).toLowerCase().includes(q));
+  rows.sort((a,b)=>rank(a)-rank(b)||a.name.localeCompare(b.name));
+  $("reg").innerHTML=rows.map(o=>{
+    let d;
+    if(o.s.k==="open")d=`<div class="dt">${o.dueApprox?"≈ ":""}${fmt(o.s.date)}</div><div class="dd">${o.s.n===0?"сегодня":"осталось "+dword(o.s.n)}</div>`;
+    else if(o.s.k==="opening")d=`<div class="dt">с ${fmt(o.s.date)}</div>`;
+    else if(o.s.k==="closed")d=`<div class="dt">закрыто ${fmt(o.s.date)}</div><div class="dd">${esc(o.s.next||"")}</div>`;
+    else d=`<div class="dd">${esc(o.s.text)}</div>`;
+    const cal=o.s.k==="open"?` <a class="dd" href="${gcal(o)}" target="_blank" rel="noopener">в календарь</a>`:"";
+    return `<tr><td><div class="nm"><a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.name)}</a>${o.search?` <span class="searchlink">· поиск</span>`:""}</div>
+      <div class="org">${esc(o.org)} · ${esc(KINDS[o.kind])} · ${esc(o.cit?CITL[o.cit]:"гражданство не указано")}${o.stages?" · "+o.stages.map(s=>STAGES[s]).join(", "):""}</div><div class="sm">${esc(o.sum)}</div></td>
+      <td>${d}${cal}</td><td><div class="tags">${o.sc.hits.map(h=>`<span class="tag">${esc(h)}</span>`).join("")}</div></td><td>${fitPill(o.f)}</td><td>${starBtn(o.id)}</td></tr>`}).join("")||`<tr><td colspan="5" class="empty">Ничего не найдено.</td></tr>`;
+  $("reg-foot").textContent=`${counts.can} из ${PROGRAMS.length} открыты для этапа и гражданства этого профиля; ${counts.canMatch} из них совпадают с интересами. Перед подачей проверяйте даты на официальной странице.`;
+}
+function gcal(o){const d=o.s.date.replace(/-/g,"");const n=new Date(pd(o.s.date).getTime()+86400000);const e=n.getFullYear()+String(n.getMonth()+1).padStart(2,"0")+String(n.getDate()).padStart(2,"0");
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent("Дедлайн: "+o.name)+"&dates="+d+"/"+e+"&details="+encodeURIComponent(o.url)}
+function renderAll(){
+  $("tm-today").textContent=today.getDate()+" "+MON[today.getMonth()];
+  renderProfiles();renderControls();const r=compute();renderDigest(r);renderRunway();renderShortlist();renderRegistry();save();
+}
+function refresh(){const r=compute();renderProfiles();renderDigest(r);renderRunway();renderShortlist();renderRegistry();save()}
+
+/* ---------- events ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-del],[data-p],#newp,[data-w],[data-x],[data-s],[data-star],[data-tab]");if(!t)return;
+  if(t.dataset.del){e.stopPropagation();custom=custom.filter(p=>p.id!==t.dataset.del);LS.set("ms.custom",custom);if(state.profileId===t.dataset.del)state=fromProfile(PROFILES[3]);renderAll();return}
+  if(t.dataset.p){const p=allProfiles().find(x=>x.id===t.dataset.p);if(p){const who=state.who;state=fromProfile(p);state.who=who;renderAll()}return}
+  if(t.id==="newp"){const n=custom.length+1;const id="c"+Date.now();
+    custom.push({...JSON.parse(JSON.stringify(state)),id,custom:true,area:"Ваш профиль",name:"Мой профиль "+n,desc:state.rkw.slice(0,4).map(k=>k.t).join(", "),feed:"Ваши ключевые слова и фильтры.",opp:"Программы по вашим ключевым словам."});
+    LS.set("ms.custom",custom);state.profileId=id;renderAll();return}
+  if(t.dataset.w){const l=state[t.dataset.l];const k=l[+t.dataset.i];k.w=k.w%3+1;renderControls();refresh();return}
+  if(t.dataset.x){state[t.dataset.l].splice(+t.dataset.x,1);renderControls();refresh();return}
+  if(t.dataset.s){state[t.dataset.l].push({t:t.dataset.s,w:2});renderControls();refresh();return}
+  if(t.dataset.star){const id=t.dataset.star;stars[id]=!stars[id];if(!stars[id])delete stars[id];LS.set("ms.stars",stars);
+    document.querySelectorAll(`[data-star="${CSS.escape(id)}"]`).forEach(b=>b.setAttribute("aria-pressed",String(!!stars[id])));renderShortlist();return}
+  if(t.dataset.tab){regTab=t.dataset.tab;renderRegistry();return}
+});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&e.target.dataset.del){e.preventDefault();e.target.click()}});
+function addKw(form,input,key){$(form).addEventListener("submit",e=>{e.preventDefault();const v=$(input).value.trim();if(!v)return;
+  if(!state[key].some(k=>k.t.toLowerCase()===v.toLowerCase()))state[key].push({t:v,w:2});$(input).value="";renderControls();refresh()})}
+addKw("r-add","r-add-in","rkw");addKw("o-add","o-add-in","okw");
+const bind=(id,ev,fn)=>$(id).addEventListener(ev,fn);
+bind("r-bar","input",e=>{state.rBar=+e.target.value;renderControls();refresh()});
+bind("o-bar","input",e=>{state.oBar=+e.target.value;renderControls();refresh()});
+bind("r-age","change",e=>{state.age=e.target.value;refresh()});
+bind("r-max","change",e=>{state.maxP=+e.target.value;refresh()});
+bind("r-undated","change",e=>{state.undated=e.target.checked;refresh()});
+bind("o-skip","change",e=>{state.skip=+e.target.value;refresh()});
+bind("o-past","change",e=>{state.hidePast=e.target.checked;refresh()});
+bind("o-inel","change",e=>{state.hideInel=e.target.checked;refresh()});
+bind("stage","change",e=>{state.stage=e.target.value;refresh()});
+bind("cit","change",e=>{state.cit=e.target.value;refresh()});
+bind("sort","change",e=>{state.sort=e.target.value;refresh()});
+bind("who","input",e=>{state.who=e.target.value;save()});
+bind("reg-q","input",renderRegistry);
+$("kinds").addEventListener("change",e=>{const k=e.target.dataset.kind;if(k){state.kinds[k]=e.target.checked;refresh()}});
+
+/* ---------- export ---------- */
+async function copy(text,toastId,okMsg){
+  try{await navigator.clipboard.writeText(text);$(toastId).textContent=okMsg}
+  catch(e){const ta=$("exp-out");ta.hidden=false;ta.value=text;ta.focus();ta.select();$(toastId).textContent="Не удалось скопировать автоматически. Текст выделен ниже, скопируйте его вручную."}
+}
+function csvRows(){
+  const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+  const lines=[];
+  if(state.who)lines.push([q("Трекер: "+state.who)].join(","));
+  lines.push(["Тип","Название","Организация","Срок","Статус","Гражданство","Этапы","Подходит","Совпадение","Ссылка"].map(q).join(","));
+  PROGRAMS.map(p=>({...p,s:status(p),f:fit(p),sc:score(p,state.okw,p.name)})).filter(o=>o.f.v!=="no").forEach(o=>{
+    const st=o.s.k==="open"?"Открыто":o.s.k==="opening"?"Скоро откроется":o.s.k==="closed"?"Закрыто":"Без даты";
+    const dl=o.s.date?o.s.date:(o.s.text||"");
+    lines.push([KINDS[o.kind],o.name,o.org,dl,st+(o.s.next?" · "+o.s.next:""),o.cit?CITL[o.cit]:"Не указано",o.stages?o.stages.map(s=>STAGES[s]).join("/"):"Не указано",FITL[o.f.v][1],o.sc.s,o.url].map(q).join(","))});
+  lines.push("");lines.push(["Чтение","Название","Источник","Дата","","","","","Совпадение","Ссылка"].map(q).join(","));
+  compute().res.forEach(p=>lines.push(["Работа",p.title,p.src,p.date||"без даты","","","","",p.sc.s,p.url].map(q).join(",")));
+  return "\ufeff"+lines.join("\r\n");
+}
+function ics(){
+  const now=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  const ev=PROGRAMS.map(p=>({...p,s:status(p),f:fit(p)})).filter(o=>o.f.v!=="no"&&o.s.k==="open").map(o=>{
+    const d=o.s.date.replace(/-/g,"");const n=new Date(pd(o.s.date).getTime()+86400000);
+    const e=n.getFullYear()+String(n.getMonth()+1).padStart(2,"0")+String(n.getDate()).padStart(2,"0");
+    return ["BEGIN:VEVENT","UID:"+o.id+"-"+d+"@ms-digest","DTSTAMP:"+now,"DTSTART;VALUE=DATE:"+d,"DTEND;VALUE=DATE:"+e,"SUMMARY:Дедлайн: "+o.name.replace(/[,;]/g,"\\$&"),"URL:"+o.url,
+      "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Через неделю дедлайн: "+o.name.replace(/[,;]/g,"\\$&"),"TRIGGER:-P7D","END:VALARM","END:VEVENT"].join("\r\n")});
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Madam Securite//Digest//RU","CALSCALE:GREGORIAN"].concat(ev).concat(["END:VCALENDAR"]).join("\r\n");
+}
+let downloads=null;
+if(window.claude&&window.claude.use){window.claude.use("downloads").then(d=>{downloads=d}).catch(()=>{})}
+$("dl-csv").addEventListener("click",async()=>{
+  const data=csvRows();const name="tracker"+(state.who?"-"+state.who.replace(/[^\p{L}\p{N}]+/gu,"_"):"")+".csv";
+  if(downloads){try{await downloads.save({filename:name,data});$("exp-toast").textContent="Таблица сохранена.";return}
+    catch(e){if(e&&e.code==="declined"){$("exp-toast").textContent="Сохранение отменено.";return}}}
+  copy(data,"exp-toast","Скачивание здесь недоступно, поэтому таблица скопирована в буфер. Вставьте её в Google Таблицы или Excel.");
+});
+$("cp-ics").addEventListener("click",()=>copy(ics(),"exp-toast","Календарь скопирован. Сохраните текст как deadlines.ics и откройте в календаре."));
+$("cp-set").addEventListener("click",()=>{const s={...state};copy(JSON.stringify(s),"set-toast","Настройки скопированы.")});
+$("imp-toggle").addEventListener("click",()=>{$("imp-box").hidden=!$("imp-box").hidden});
+$("imp-go").addEventListener("click",()=>{try{const s=JSON.parse($("imp-in").value);if(!s.rkw||!s.okw)throw 0;state={...fromProfile(PROFILES[3]),...s};renderAll();$("set-toast").textContent="Настройки применены."}
+  catch(e){$("set-toast").textContent="Не похоже на скопированные настройки. Скопируйте их кнопкой «Скопировать настройки» и вставьте целиком."}});
+
+renderAll();
+})();
+</script>
