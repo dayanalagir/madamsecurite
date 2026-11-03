@@ -1,0 +1,29 @@
+name: madam-digest CI
+
+on:
+  push:
+    paths: ["madam-digest/**", ".github/workflows/madam-digest.yml"]
+  pull_request:
+    paths: ["madam-digest/**", ".github/workflows/madam-digest.yml"]
+
+concurrency:
+  group: madam-digest-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: madam-digest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: pytest
+      - run: madam --help
+      - run: madam config check

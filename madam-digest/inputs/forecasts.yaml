@@ -1,0 +1,6 @@
+# Журнал прогнозов «Ситуэйшн Рум». Ведёт Даяна, система только напоминает о датах.
+# - question: "..."
+#   closes_on: 2027-03-01
+#   my_probability: 0.6
+#   resolution_source: "https://..."
+forecasts: []

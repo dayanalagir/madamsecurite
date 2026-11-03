@@ -1,0 +1,39 @@
+# Расписание (разделы 3 и 15). Время в часовом поясе Даяны; GitHub Actions запускается раз в час,
+# а решение «пора ли отправлять» принимает код по этому файлу и таблице digests.
+timezone: America/New_York
+
+streams:
+  madam:
+    name_ru: "Международная повестка"
+    subject: "Мадам · {type} · {date}"
+    topics: [arms_control, women, regions, world, theory, tech, careers, language, culture]
+  space:
+    name_ru: "Космос"
+    subject: "Мадам · Космос · {type} · {date}"
+    topics: [space]
+
+letters:
+  - {id: daily,        stream: madam, name_ru: "Утренний бриф",          days: [mon, tue, wed, thu, fri], time: "07:00"}
+  - {id: daily_short,  stream: madam, name_ru: "Утренний бриф (коротко)", days: [sat, sun],                time: "09:00"}
+  - {id: friday,       stream: madam, name_ru: "Пятничная сводка (черновик)", days: [thu],                 time: "18:00", draws_from: [madam, space]}
+  - {id: topic,        stream: madam, name_ru: "Тематический дайджест",  days: [mon, wed, thu, fri, sat, sun], time: "16:00"}
+  - {id: weekly,       stream: madam, name_ru: "Недельный обзор",        days: [sun],                      time: "18:00"}
+  - {id: monthly,      stream: madam, name_ru: "Месячный обзор",         day_of_month: 1,                  time: "08:00"}
+  - {id: space_daily,  stream: space, name_ru: "Космический бриф",       days: [mon, tue, wed, thu, fri], time: "07:30"}
+  - {id: space_short,  stream: space, name_ru: "Космический бриф (коротко)", days: [sat, sun],             time: "09:30"}
+  - {id: space_topic,  stream: space, name_ru: "Космос: тематический дайджест", days: [tue],               time: "16:00"}
+  - {id: space_weekly, stream: space, name_ru: "Космос: недельный обзор", days: [sun],                     time: "18:30"}
+  - {id: alert,        stream: any,   name_ru: "Алерт",                  max_per_day: 2}
+
+# Ротация тематических дайджестов потока madam (вторник ушёл в поток space).
+topic_rotation:
+  mon: arms_control
+  wed: regions
+  thu: theory
+  fri: women
+  sat: tech
+  sun: careers   # плюс блок «Брифинг» (язык)
+
+friday_pack:
+  first_issue_number: 1
+  first_issue_draft_date: 2026-11-05

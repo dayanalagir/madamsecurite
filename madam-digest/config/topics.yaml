@@ -1,0 +1,132 @@
+# Топики (раздел 4). Поле stream делит всё на два независимых потока писем:
+#   madam — международная повестка для Madam Securité;
+#   space — космические новости и космическая безопасность, отдельными письмами.
+# sources заполняются на этапе 1 только проверенными id из config/sources.yaml.
+# Ключевые слова — стартовые из ТЗ; расширенный список утверждает Даяна на этапе 2 (⚑).
+clusters: [mech, self, news, cur, salon, serial]
+
+topics:
+  - id: arms_control
+    name_ru: "Контроль над вооружениями и нераспространение («Верификация»)"
+    stream: madam
+    weight: 1.0
+    keywords: [arms control, nonproliferation, verification, inspections, NPT, CTBT, New START, INF, Open Skies,
+               BWC, CWC, IAEA safeguards, OPCW, test ban, nuclear posture, ДНЯО, ДВЗЯИ, ДСНВ, ДРСМД, КБТО, КХО,
+               МАГАТЭ, ОЗХО, верификация, инспекции]
+    exclude: []
+    sources: []
+    rubrics: ["Верификация"]
+    cluster: mech
+    account: m
+
+  - id: space
+    name_ru: "Космос и космическая безопасность"
+    stream: space
+    weight: 1.0
+    keywords: [space security, counterspace, ASAT, rendezvous and proximity operations, space domain awareness,
+               Outer Space Treaty, Artemis Accords, cislunar, lunar governance, space traffic, GNSS jamming,
+               space law, COPUOS, Договор по космосу, Соглашения Артемиды, космическая безопасность,
+               safety zone, ILRS, space resources, space-based interceptor, missile defense, Golden Dome,
+               conjunction, orbital debris, space situational awareness, spectrum, Space Force]
+    exclude: []
+    sources: []
+    rubrics: ["Секьюритизация", "Как устроено…"]
+    cluster: mech
+    account: m
+    flags: [phd_dataset_candidate]
+
+  - id: women
+    name_ru: "Женщины в дипломатии и безопасности («За столом»)"
+    stream: madam
+    weight: 1.0
+    keywords: [women peace and security, WPS, resolution 1325, women negotiators, women mediators,
+               female ambassadors, gender and security, женщины-дипломаты, "Женщины, мир, безопасность", резолюция 1325]
+    exclude: []
+    sources: []
+    rubrics: ["За столом"]
+    cluster: serial
+    account: m
+
+  - id: regions
+    name_ru: "Регионы («Сферы влияния»)"
+    stream: madam
+    weight: 1.0
+    subtopics: [europe_nato, indo_pacific_china, mena, eurasia, africa, latam, arctic]
+    keywords: [NATO, Indo-Pacific, South China Sea, Taiwan Strait, Middle East, Sahel, Arctic, Latin America,
+               Central Asia, South Caucasus, НАТО, Индо-Тихоокеанский регион, Арктика, Центральная Азия]
+    exclude: []
+    sources: []
+    rubrics: ["Сферы влияния"]
+    cluster: news
+    account: m
+    rule: "Для сюжета о регионе минимум два источника с разных сторон."
+
+  - id: world
+    name_ru: "Мировая повестка, конфликты и институты"
+    stream: madam
+    weight: 1.0
+    keywords: [UN Security Council, General Assembly, summit, ceasefire, peace talks, sanctions, resolution,
+               Совет Безопасности ООН, Генассамблея, саммит, переговоры]
+    exclude: []
+    sources: []
+    rubrics: ["Пятничная сводка", "Как устроено…"]
+    cluster: news
+    account: m
+
+  - id: theory
+    name_ru: "Теория и академия"
+    stream: madam
+    weight: 0.8
+    keywords: [international relations theory, realism, liberalism, constructivism, securitization, deterrence,
+               alliance, hegemony, теория международных отношений, секьюритизация]
+    exclude: []
+    sources: []
+    rubrics: ["Доктрина", "Securité Explains"]
+    cluster: mech
+    account: m
+
+  - id: tech
+    name_ru: "Технологии и международные отношения"
+    stream: madam
+    weight: 0.8
+    keywords: [AI and security, export controls, semiconductors, quantum, cyber, cyberattack, state-sponsored hacking,
+               экспортный контроль, полупроводники, кибербезопасность]
+    exclude: []
+    sources: []
+    rubrics: ["МО и новые технологии"]
+    cluster: mech
+    account: m
+
+  - id: careers
+    name_ru: "Возможности и карьера («Протокол поступления», «Депеша»)"
+    stream: madam
+    weight: 0.7
+    keywords: [fellowship, scholarship, call for papers, summer school, internship, PhD, master's, deadline,
+               стипендия, стажировка, летняя школа]
+    exclude: []
+    sources: []
+    rubrics: ["Протокол поступления"]
+    cluster: cur
+    account: m
+
+  - id: language
+    name_ru: "Язык: политический английский («Брифинг»)"
+    stream: madam
+    weight: 0.5
+    keywords: []
+    exclude: []
+    sources: []
+    rubrics: ["Брифинг"]
+    cluster: serial
+    account: m
+
+  - id: culture
+    name_ru: "Культура, книги, персоналии и история"
+    stream: madam
+    weight: 0.5
+    keywords: [book, memoir, film, anniversary, on this day, книга, мемуары, годовщина]
+    exclude: []
+    sources: []
+    rubrics: ["Роман с языком", "Забытые конфликты", "Цитата недели"]
+    cluster: salon
+    account: b

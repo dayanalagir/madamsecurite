@@ -1,0 +1,14 @@
+# Якорные даты (раздел 10). Дата без verified_on в письмо не попадает.
+anchors:
+  - {date: "01-27", title: "1967: Договор по космосу открыт для подписания", topics: [space, arms_control], verified_on: null}
+  - {date: "03-05", title: "1970: ДНЯО вступил в силу", topics: [arms_control], verified_on: null}
+  - {date: "03-08", title: "Международный женский день: только с содержанием, без поздравлений", topics: [women], verified_on: null}
+  - {date: "07-01", title: "1968: ДНЯО открыт для подписания", topics: [arms_control], verified_on: null}
+  - {date: "08-06", title: "Хиросима, 1945", topics: [arms_control, history], verified_on: null}
+  - {date: "08-09", title: "Нагасаки, 1945", topics: [arms_control, history], verified_on: null}
+  - {date: "08-29", title: "Международный день действий против ядерных испытаний", topics: [arms_control], verified_on: null}
+  - {date: "09-24", title: "1996: ДВЗЯИ открыт для подписания", topics: [arms_control], verified_on: null}
+  - {date: "09-26", title: "Международный день за полную ликвидацию ядерного оружия", topics: [arms_control], verified_on: null}
+  - {date: "10-04", title: "1957: запуск первого спутника; начало Всемирной недели космоса (4-10 октября)", topics: [space], verified_on: null}
+  - {date: "10-31", title: "Годовщина резолюции 1325 СБ ООН", topics: [women], verified_on: null}
+  - {date: "12-08", title: "1987: подписан ДРСМД", topics: [arms_control, history], verified_on: null}

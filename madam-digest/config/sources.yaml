@@ -1,0 +1,16 @@
+# Источники (раздел 5). Пусто намеренно: на этапе 1 каждый адрес проверяется живым запросом,
+# и сюда попадает только рабочий. Результаты проверки: sources/SOURCES_STATUS.md.
+# Формат записи:
+# - id: spacenews
+#   name: SpaceNews
+#   url: https://...           # рабочая лента или страница
+#   type: rss                  # rss | atom | api | html
+#   lang: en
+#   region: global
+#   stream: space              # madam | space
+#   topics: [space]
+#   tier: 2                    # 1 первоисточник, 2 профильное издание, 3 агрегатор/мнение
+#   paywall: false
+#   fetch_every_minutes: 60
+#   notes: ""
+sources: []

@@ -1,0 +1,14 @@
+# Рубрики и форматы Мадам (раздел 2), на которые система подбирает материал.
+formats:
+  - {id: securite_explains, name: "Securité Explains", kind: "понятия"}
+  - {id: securite_notes, name: "Securité Notes", kind: "цитаты, чтение"}
+  - {id: salon_talks, name: "Salon Talks", kind: "интервью"}
+  - {id: ir_real_talk, name: "IR Real Talk", kind: "пост и инфографика"}
+  - {id: madam_explains, name: "Мадам объясняет", kind: "текст от первого лица"}
+  - {id: missed_in_class, name: "What You Missed in Class", kind: "объяснялка"}
+  - {id: modern_diplomat, name: "Современный дипломат", kind: "серия"}
+  - {id: catwalk, name: "Catwalk of Ideas", kind: "серия"}
+  - {id: friday_pack, name: "Пятничная сводка", kind: "карусель + пост в Telegram"}
+  - {id: how_it_works, name: "Как устроено…", kind: "Reels-серия с номерами частей"}
+  - {id: dice, name: "Кости брошены", kind: "разбор по случайным параметрам"}
+methods: [five_lenses, conflict_map, speech_act, sats, region_six_rows, dice, none]
